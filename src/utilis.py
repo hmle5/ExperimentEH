@@ -135,8 +135,8 @@ def mark_story_as_used(story_code):
 # === CONFIGURABLE CONSTANTS ===
 DEFAULT_EXCEL_PATH = "data/clean_data_new.xlsx"
 DEFAULT_JSON_PATH = "startup_data.json"
-DEFAULT_NUM_SETS = 400
-DEFAULT_SET_SIZE = 6
+DEFAULT_NUM_SETS = 100
+DEFAULT_SET_SIZE = 4
 DEFAULT_CODE_LENGTH = 10
 
 
