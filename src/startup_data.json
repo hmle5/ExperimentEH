@@ -4915,7 +4915,7 @@
     },
     {
         "code": "KEW8E7ZL4Q",
-        "used": false,
+        "used": true,
         "startups": [
             {
                 "Startup_name": "Expada",
@@ -15391,7 +15391,7 @@
     },
     {
         "code": "5LX5E5IDRK",
-        "used": false,
+        "used": true,
         "startups": [
             {
                 "Startup_name": "Expada",

@@ -73,6 +73,22 @@ Why did the SEC choose to issue this reminder now? The agency did not say. But w
     "correct_answer": "The SEC reminded founders and investors that the startup culture often exaggerates a company's true potential, amid overenthusiasm around AI.",
 }
 
+BANKMAN_ARTICLE = {
+    "title": "S.E.C. Charges Sam Bankman-Fried With Defrauding FTX Investors",
+    "content": """U.S. regulators filed civil securities fraud charges on Tuesday against Sam Bankman-Fried, the founder of the collapsed FTX crypto exchange, who was arrested on Monday night at his home in the Bahamas. The Securities and Exchange Commission charged him with misleading big investors, who committed nearly $2 billion to FTX in recent years, about the financial health of the crypto exchange and its partner crypto trading platform, Alameda Research.
+The S.E.C. also said that Mr. Bankman-Fried misled customers by taking in billions of dollars to trade crypto on FTX and telling them it was safe. But the S.E.C. said that money from customers was commingled with funds at Alameda and used to finance investments in outside ventures, buy real estate and make political donations.
+The collapse of the FTX empire shocked the crypto world and has caused many investors to get to grips with not just the volatility of crypto assets but the security and safety of the platforms that crypto is traded on. FTX was one of the biggest exchanges in the world and spent extensively on advertising and marketing.
+""",
+    "source": "The New York Times",
+    "question": "What was the product offered by Sam Bankman-Fried’s start-up and what happened to it?",
+    "options": [
+        "FTX was one of the largest cryptocurrency trading platforms. However, its founder was charged with embezzling funds from a partner crypto platform.",
+        "FTX was one of the biggest crypto exchange platforms. However, its founder was accused of disclosing customers’ real estate investments and political donations.",
+        "FTX was one of the most prominent crypto exchange platforms. However, its founder was charged with defrauding investors and misusing customers’ funds.",
+    ],
+    "correct_answer": "FTX was one of the most prominent crypto exchange platforms. However, its founder was charged with defrauding investors and misusing customers’ funds.",
+}
+
 
 def generate_news_story_file():
     """Create the JSON file at startup if it does not exist."""
@@ -84,11 +100,14 @@ def generate_news_story_file():
 
     # Generate 500 unique entries for each story type
     # Pilot 1: 90 unique entries for each story type
+    # Pilot 2: 80 unique entries for each story type
+    # Pilot 2: Replace control_article with bankman
     stories = []
     for _ in range(90):
         stories.append({"code": generate_code(), "used": False, "story": "holmes"})
-        stories.append({"code": generate_code(), "used": False, "story": "control_news"})
+        #stories.append({"code": generate_code(), "used": False, "story": "control_news"})
         stories.append({"code": generate_code(), "used": False, "story": "control_fraud_news"})
+        stories.append({"code": generate_code(), "used": False, "story": "bankman"})
 
     # Save to JSON file
     with open(NEWS_FILE, "w") as f:

@@ -19,8 +19,9 @@ from utilis import (
     mark_story_as_used,
     generate_news_story_file,
     HOLMES_ARTICLE,
-    CONTROL_ARTICLE,
+    #CONTROL_ARTICLE,
     CONTROL_FRAUD_ARTICLE,
+    BANKMAN_ARTICLE,
     # generate_startup_file,
     # get_unused_startup,
     # mark_startup_as_used,
@@ -180,8 +181,10 @@ def news_info():
         # article_data = HOLMES_ARTICLE if story_type == "holmes" else CONTROL_ARTICLE
         if story_type == "holmes":
             article_data = HOLMES_ARTICLE
-        elif story_type == "control_news":
-            article_data = CONTROL_ARTICLE
+        #elif story_type == "control_news":
+        #    article_data = CONTROL_ARTICLE
+        elif story_type == "bankman":
+            article_data = BANKMAN_ARTICLE
         else:
             article_data = CONTROL_FRAUD_ARTICLE
 
@@ -223,8 +226,8 @@ def news_info():
         HOLMES_ARTICLE
         if story_entry["story"] == "holmes"
         else (
-            CONTROL_ARTICLE
-            if story_entry["story"] == "control_news"
+            BANKMAN_ARTICLE
+            if story_entry["story"] == "bankman"
             else CONTROL_FRAUD_ARTICLE
         )
     )
@@ -233,16 +236,16 @@ def news_info():
     # random.shuffle(shuffled_options)
 
     # Determine image filename
-    image_filename = "holmes.png" if story_entry["story"] == "holmes" else "control.png"
-    # image_filename = (
-    #     "holmes.png"
-    #     if story_entry["story"] == "holmes"
-    #     else (
-    #         "control.png"
-    #         if story_entry["story"] == "control_news"
-    #         else "control_fraud.png"
-    #     )
-    # )
+    #image_filename = "holmes.png" if story_entry["story"] == "holmes" else "control.png"
+    image_filename = (
+        "holmes.png"
+        if story_entry["story"] == "holmes"
+        else (
+            "bankmanfried.png"
+            if story_entry["story"] == "bankman"
+            else "control_fraud.png"
+        )
+    )
 
     return render_template(
         "news_info.html",
@@ -299,16 +302,16 @@ def investment():
                 flash("Invalid amount entered.", "error")
                 return render_template("investment_multi.html", startups=startups)
 
-            if not (0 <= amount <= 300000):
-                flash("Each amount must be between 0 and 300,000.", "error")
+            if not (0 <= amount <= 200000):
+                flash("Each amount must be between 0 and 200,000.", "error")
                 return render_template("investment_multi.html", startups=startups)
 
             investments[startup_name] = amount
             total_investment += amount
 
-        if total_investment != 300000:
+        if total_investment != 200000:
             flash(
-                f"Total investment must be exactly $300,000. Your total: ${total_investment:,}.",
+                f"Total investment must be exactly $200,000. Your total: ${total_investment:,}.",
                 "error",
             )
             return render_template("investment_multi.html", startups=startups)
