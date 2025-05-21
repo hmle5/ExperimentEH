@@ -138,7 +138,7 @@
         /* Initially hide the formula */
         #investmentFormula {
             display: none;
-            margin-top: -20px;
+            margin-top: -30px;
             padding: 0;
             line-height: 1;
             overflow-x: auto;
@@ -146,13 +146,24 @@
         }
 
         #investmentFormula div {
-            margin-top: -20px;
-            padding: 0;
+            margin-top: 0;
+            padding:10px;
+            line-height: 1.5;
+        }
+
+        .formula-wrapper {
+            max-width: 100%;
+            margin: 20px 20px;
+            padding: 10px;
+            white-space: normal;
+            overflow-x: auto;
             line-height: 1;
+            background-color: #f8f8f8;
+            text-align: justify;
         }
 
         .view-formula-link {
-            color: #828282; /* Blue color for the link */
+            color: #47638b; /* Blue color for the link */
             font-size: 1.1rem; /* Increase the font size */
             text-decoration: none; /* Remove the underline */
             cursor: pointer; /* Change the cursor to a pointer when hovered */
@@ -161,7 +172,7 @@
         .view-formula-link::before {
             content: "\25B6"; /* ▶ Right-pointing triangle */
             margin-right: 8px;
-            color: #828282;
+            color: #47638b;
             font-size: 0.9em;
         }
 
@@ -195,7 +206,7 @@
 
                         <p>
                             As an investor, your role includes screening start-up applications for investment. <strong>Your task now is to 
-                            allocate a hypothetical budget of $300,000 across a portfolio of six early-stage start-ups. </strong>
+                            allocate a hypothetical budget of $200,000 across a portfolio of four early-stage start-ups. </strong>
                             These start-ups are based on real business cases which offer innovative solutions with success potential. 
                             Each profile includes key information about the product, founder, and valuation. 
                         </p>
@@ -210,21 +221,28 @@
                             <a href="javascript:void(0)" onclick="toggleFormula()" class="view-formula-link">Click here to view the portfolio's return formula</a>
                         </div>
                         <!-- Hidden formula -->
-                        <div id="investmentFormula">
-                            <div>
+                        <div id="investmentFormula" style="display: none;">
+                            <div class="formula-wrapper">
+                                <p class="mt-3">In the formula below, for each start-up you invest in: if it succeeds, you receive <strong>100%</strong> of 
+                                    your invested amount as a return; if it fails, you lose <strong>80%</strong> of your invested amount. 
+                                    Your total return is the sum of these gains and losses across all the start-ups in your portfolio.
+                                </p>
+                                <div>
                                 $$ 
                                 \text{return} = \sum_{i \in \text{succeed}} (\text{investment_startup}_i \times 100\%) + \sum_{j \in \text{fail}} (\text{investment_startup}_j \times -80\%) 
                                 $$
+                                </div>
                             </div>
                         </div>
 
-                        <p>
-                            <strong>Bonus reward:</strong> Participants whose portfolio investment return ranks within the top 25% will receive a bonus reward of $1. 
+                        <p class="mt-4 mb-5">
+                            <strong>Bonus reward: Participants whose portfolio returns rank in the top 25% will receive a $1 bonus. 
+                                Please review the start-up profiles below thoroughly to make your decisions.</strong>
                         </p>
 
         
-                        <p class="mt-5 mb-5">
-                            As an attention check, you will have to make sure that your responses add up to $300,000 across the six start-ups. 
+                        <p class="mb-5">
+                            As an attention check, you will have to make sure that your responses add up to $200,000 across the four start-ups. 
                             We do a speed check to ensure you are not just quickly allocating the exact same amount of $50,000 to each 
                             company without consideration.
                         </p>
@@ -279,8 +297,8 @@
                         <div class="section-label" style="margin-top: 10px;">
                            <div style="font-weight: bold;">How much would you like to invest in this start-up?</div>
                         </div>
-                        <p class="text-muted fst-italic">(Please enter an amount between $0 and $300,000)</p>
-                        <input type="number" name="investment_{{ startup.Startup_name }}" step="1" min="0" max="300000"
+                        <p class="text-muted fst-italic">(Please enter an amount between $0 and $200,000)</p>
+                        <input type="number" name="investment_{{ startup.Startup_name }}" step="1" min="0" max="200000"
                         inputmode="numeric" pattern="\d*" onwheel="this.blur()"
                         onkeydown="return event.keyCode !== 38 && event.keyCode !== 40" class="investment-input"
                         style="width: 120px; margin-top: 5px;" required oninput="updateTotal()">
@@ -290,7 +308,7 @@
 
             <div style="text-align: center; margin-top: 20px;">
                 <strong>Total investment so far: $<span id="totalDisplay">0</span></strong><br>
-                <small id="totalWarning" style="color: rgb(155, 3, 3); display: none;">Total must be exactly $300,000.</small>
+                <small id="totalWarning" style="color: rgb(155, 3, 3); display: none;">Total must be exactly $200,000.</small>
             </div>
             
             <div class="submit-btn-container">
@@ -314,7 +332,7 @@
             document.getElementById("totalDisplay").innerText = total.toLocaleString();
 
             const warning = document.getElementById("totalWarning");
-            if (total !== 300000) {
+            if (total !== 200000) {
                 warning.style.display = "inline";
             } else {
                 warning.style.display = "none";

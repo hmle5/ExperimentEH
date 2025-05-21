@@ -135,7 +135,7 @@ def mark_story_as_used(story_code):
 # === CONFIGURABLE CONSTANTS ===
 DEFAULT_EXCEL_PATH = "data/clean_data_new.xlsx"
 DEFAULT_JSON_PATH = "startup_data.json"
-DEFAULT_NUM_SETS = 100
+DEFAULT_NUM_SETS = 300
 DEFAULT_SET_SIZE = 4
 DEFAULT_CODE_LENGTH = 10
 
@@ -179,18 +179,27 @@ def generate_unique_code(existing_codes, length=8):
 
 
 def prepare_randomized_startup_set(
-    startup_df, founder_firstname, evaluation_sentences, set_size
+    #startup_df, founder_firstname, evaluation_sentences, set_size
+    startup_df, founder_firstname_male, founder_firstname_female, evaluation_sentences, set_size
 ):
     """Prepare one startup set with normalized data and substituted evaluation sentence."""
     selected_startups = startup_df.sample(n=set_size, replace=False).to_dict(
         orient="records"
     )
-    assigned_founders = random.sample(founder_firstname, set_size)
+    #assigned_founders = random.sample(founder_firstname, set_size)
+    # now randomly select 3 male names and 1 female name from list and randomize order
+    male_names = [(name, "male") for name in random.sample(founder_firstname_male, 3)]
+    female_names = [(name, "female") for name in random.sample(founder_firstname_female, 1)]
+    assigned_founders = male_names + female_names
+    random.shuffle(assigned_founders)
+    # now for set of size 4 we have 3 external and 2 self-eva list
     assigned_sentences = random.sample(evaluation_sentences, set_size)
 
     combined = []
     for i, startup in enumerate(selected_startups):
-        founder_fullname = f"{assigned_founders[i]} {startup['Founder_lastname_altered']}"
+        #founder_fullname = f"{assigned_founders[i]} {startup['Founder_lastname_altered']}"
+        first_name, gender = assigned_founders[i]
+        founder_fullname = f"{first_name} {startup['Founder_lastname_altered']}"
         sentence = f"{assigned_sentences[i]} {startup['Valuation_amount']}."
 
         combined.append(
@@ -210,6 +219,7 @@ def prepare_randomized_startup_set(
                 ),
                 "Founder_Nstartups": startup["Founder_Nstartups"],
                 "Assigned_Founder": founder_fullname,
+                "Founder_gender": gender,
                 "Evaluation_sentence": sentence,
             }
         )
@@ -247,19 +257,26 @@ def generate_startup_sets(
     startup_df = startup_df.dropna(
         subset=["Startup_name_altered", "Industry", "Product_info_altered"]
     )
-    founder_firstname = founder_df["Founder_firstname_altered"].dropna().unique().tolist()
+    #founder_firstname = founder_df["Founder_firstname_altered"].dropna().unique().tolist()
+    # now first names from male names and female names to ensure we always have 3 males and one female
+    founder_firstname_male = founder_df[founder_df["gender"] == "male"]["Founder_firstname_altered"].dropna().unique().tolist()
+    founder_firstname_female = founder_df[founder_df["gender"] == "female"]["Founder_firstname_altered"].dropna().unique().tolist()
     evaluation_sentences = value_df["Evaluation_sentence"].dropna().tolist()
 
     # Validation
-    if len(founder_firstname) < set_size:
-        raise ValueError("Not enough founder names in Excel to build a full set.")
+    #if len(founder_firstname) < set_size:
+    #    raise ValueError("Not enough founder names in Excel to build a full set.")
+    if len(founder_firstname_male) < 3 or len(founder_firstname_female) < 1:
+         raise ValueError("Not enough male or female founder names to build each set.")
+
 
     startup_sets = []
     used_codes = set()
 
     for _ in range(num_sets):
         startup_data = prepare_randomized_startup_set(
-            startup_df, founder_firstname, evaluation_sentences, set_size
+            #startup_df, founder_firstname, evaluation_sentences, set_size
+            startup_df, founder_firstname_male, founder_firstname_female, evaluation_sentences, set_size
         )
         code = generate_unique_code(used_codes, length=code_length)
         used_codes.add(code)
@@ -271,6 +288,12 @@ def generate_startup_sets(
                 "startups": startup_data,
             }
         )
+    
+    # === VALIDATION: Check female founder count per set ===
+    for s in startup_sets:
+        num_females = sum(1 for entry in s["startups"] if entry["Founder_gender"] == "female")
+        if num_females != 1:
+            print(f"Warning: Set {s['code']} has {num_females} female founders")
 
     save_startup_sets_to_json(startup_sets, output_path)
     return True

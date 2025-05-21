@@ -71,7 +71,7 @@
     },
     {
         "code": "MUGM7PLJ",
-        "used": false,
+        "used": true,
         "story": "control_fraud_news"
     },
     {
@@ -256,7 +256,7 @@
     },
     {
         "code": "FDE1CT3H",
-        "used": false,
+        "used": true,
         "story": "holmes"
     },
     {
@@ -416,7 +416,7 @@
     },
     {
         "code": "I9M06AJM",
-        "used": false,
+        "used": true,
         "story": "control_fraud_news"
     },
     {

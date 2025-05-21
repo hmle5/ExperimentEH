@@ -6,7 +6,7 @@ library(tidyr)
 library(purrr)
 
 
-json_data <- fromJSON(r"(...GitHub\ExperimentEH\src\startup_data.json)", simplifyVector = FALSE)
+json_data <- fromJSON(r"(C:\Users\admin\OneDrive\Documents\GitHub\ExperimentEH\src\startup_data.json)", simplifyVector = FALSE)
 #names(json_data)
 startup_df <- do.call(rbind, lapply(json_data, function(entry) {
   # For each startup, attach the parent code and used fields
@@ -20,6 +20,7 @@ startup_df <- do.call(rbind, lapply(json_data, function(entry) {
                Founder_age = s$Founder_age,
                Founder_Nstartups = s$Founder_Nstartups,
                Assigned_Founder = s$Assigned_Founder,
+               Founder_gender = s$Founder_gender,
                Evaluation_sentence = s$Evaluation_sentence,
                Order = s$Order,
                stringsAsFactors = FALSE)
@@ -49,3 +50,14 @@ startup_df$Evaluation_sentence1 = startup_df$Evaluation_sentence
 startup_df = startup_df %>%
   separate(Evaluation_sentence1, into = c("evaluator", "valuation"), sep = "\\$", extra = "merge") 
 unique(startup_df$evaluator)
+
+
+
+# gender composition in set
+startup_df = startup_df %>% dplyr::group_by(code) %>% dplyr::mutate(
+  nFemInSet = sum(Founder_gender=="female"),
+  Fem_Order = which(Founder_gender=="female")
+)
+summary(startup_df$nFemInSet)
+summary(startup_df$Fem_Order)
+table(startup_df$Fem_Order)
