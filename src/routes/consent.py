@@ -2,6 +2,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 import uuid
 import re
 import time
+from zoneinfo import ZoneInfo
+
+
 from datetime import datetime
 from collections import Counter
 from nltk.corpus import words as nltk_words
@@ -12,6 +15,7 @@ nltk.download("words")
 from models import db, UserConsent, Response
 from utilis import get_client_ip, get_user_agent, generate_unique_participant_id
 
+GERMAN_TZ = ZoneInfo("Europe/Berlin")
 # import logging
 # from flask import Flask, request, render_template
 # from flask_session import Session
@@ -116,7 +120,8 @@ def is_gibberish(text):
 
 
 def is_too_fast(min_seconds=5):
-    return time.time() - session.get("start_time", 0) < min_seconds
+    now_ts = datetime.now(GERMAN_TZ).timestamp()
+    return now_ts - session.get("start_time", 0) < min_seconds
 
 
 @main_bp.route("/attentioncheck_1", methods=["GET", "POST"])
@@ -127,6 +132,16 @@ def attentioncheck_1():
         response_text = request.form.get("response", "").strip()
         honeypot = request.form.get("website", "")
 
+        # Time tracking for this attempt
+        attempt_start = session.get(
+            "attention_attempt_start", datetime.now(GERMAN_TZ).timestamp()
+        )
+        attempt_duration = datetime.now(GERMAN_TZ).timestamp() - attempt_start
+
+        session["attentioncheck_1_duration"] = (
+            session.get("attentioncheck_1_duration", 0) + attempt_duration
+        )
+
         if honeypot:
             error = "Invalid submission."
         elif is_too_fast():
@@ -134,10 +149,26 @@ def attentioncheck_1():
         elif is_gibberish(response_text):
             error = "Your response appears repetitive or nonsensical. Please provide a real opinion with at least 15 meaningful words."
         else:
+            # Passed the check
+            session["attentioncheck_1_response"] = response_text
+
+            consent_id = session.get("consent_id")
+            response_record = Response.query.filter_by(consent_id=consent_id).first()
+
+            if response_record:
+                response_record.attentioncheck_1_response = response_text
+                response_record.attentioncheck_1_duration = session.get(
+                    "attentioncheck_1_duration", 0
+                )
+                db.session.commit()
+
             return redirect(url_for("main.index"))
 
     if request.method == "GET":
-        session["start_time"] = time.time()
+        if "start_time" not in session:
+            session["start_time"] = datetime.now(GERMAN_TZ).timestamp()
+
+        session["attention_attempt_start"] = datetime.now(GERMAN_TZ).timestamp()
 
     return render_template("attentioncheck_1.html", error=error)
 
@@ -145,32 +176,26 @@ def attentioncheck_1():
 @main_bp.route("/index", methods=["GET", "POST"])
 def index():
     error = None
-    # ip = get_client_ip()
-    # user_agent = get_user_agent()
     consent_id = session.get("consent_id")
 
-    consent_record = UserConsent.query.filter_by(
-        # ip_address=ip, user_agent=user_agent,
-        consent_id=consent_id
-    ).first()
-
+    # Validate that user has given consent
+    consent_record = UserConsent.query.filter_by(consent_id=consent_id).first()
     if not consent_record or not consent_record.consent_given:
         return redirect(url_for("main.consent"))
 
-    response_record = Response.query.filter_by(
-        # consent_id=consent_record.consent_id,
-        consent_id=consent_id
-    ).first()
+    # Check if this user has a response already
+    response_record = Response.query.filter_by(consent_id=consent_id).first()
 
     if response_record:
+        # Set session info from DB
         session["participant_id"] = response_record.participant_id
-        session["start_time"] = response_record.start_time
+        session["start_time"] = response_record.start_time.isoformat()
         session["question_answered"] = True
 
         if response_record.completed:
             return render_template("already_completed.html")
 
-        # 🧠 Resume from the next required step
+        # Resume from the next step in survey flow
         SURVEY_FLOW = [
             "survey_bp.instructions",
             "survey_bp.educating",
@@ -193,21 +218,26 @@ def index():
 
         return redirect(url_for(next_step))
 
+    # Handle new participant form submission
     if request.method == "POST":
         prolific_id = request.form.get("prolific_id", "").strip()
         if not prolific_id:
             error = "Please enter your Prolific ID before continuing."
             return render_template("index.html", error=error)
 
-        response_record = Response.query.filter_by(consent_id=consent_id).first()
-        if response_record:
-            flash("You have already started this survey.")
-            return redirect(url_for("main.index"))
+        # ❗ Check for duplicate Prolific ID (across all users)
+        existing_prolific = Response.query.filter_by(prolific_id=prolific_id).first()
+        if existing_prolific:
+            return render_template("already_completed.html")
 
-        # participant_id = generate_unique_participant_id()
+        # Create new response record
         participant_id = uuid.uuid4().hex
-        session["participant_id"] = str(participant_id)
-        session["start_time"] = datetime.now().isoformat()
+        session["participant_id"] = participant_id
+        session["start_time"] = session.get(
+            "start_time", datetime.now(GERMAN_TZ).timestamp()
+        )
+
+        # session["start_time"] = session.get("start_time", time.time())  # fallback
         session["question_answered"] = True
         session["prolific_id"] = prolific_id
 
@@ -217,7 +247,11 @@ def index():
                 participant_id=participant_id,
                 prolific_id=prolific_id,
                 completed=False,
-                start_time=datetime.now(),
+                start_time=datetime.fromtimestamp(
+                    float(session["start_time"]), GERMAN_TZ
+                ),
+                attentioncheck_1_duration=session.get("attentioncheck_1_duration"),
+                attentioncheck_1_response=session.get("attentioncheck_1_response"),
             )
             db.session.add(response_record)
             db.session.commit()

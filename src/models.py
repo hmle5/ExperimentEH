@@ -1,5 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from zoneinfo import ZoneInfo
+
+GERMAN_TZ = ZoneInfo("Europe/Berlin")
 import json
 
 db = SQLAlchemy()
@@ -11,7 +14,11 @@ class UserConsent(db.Model):
     ip_address = db.Column(db.String(50), nullable=False)
     user_agent = db.Column(db.String(200), nullable=False)
     consent_given = db.Column(db.Boolean, default=False, nullable=False)
-    date_given = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_given = db.Column(
+        db.DateTime, nullable=False, default=lambda: datetime.now(GERMAN_TZ)
+    )
+
+    # date_given = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
 class Response(db.Model):
@@ -33,9 +40,15 @@ class Response(db.Model):
     total_time_survey_minutes = db.Column(
         db.Float, nullable=True
     )  # Total duration in minutes
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_created = db.Column(
+        db.DateTime, nullable=False, default=lambda: datetime.now(GERMAN_TZ)
+    )
+
     date_updated = db.Column(
-        db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow
+        db.DateTime,
+        nullable=False,
+        default=lambda: datetime.now(GERMAN_TZ),
+        onupdate=lambda: datetime.now(GERMAN_TZ),
     )
     startup_code = db.Column(db.String(50), nullable=True)
     # founder_name = db.Column(db.String(100), nullable=True)
@@ -46,6 +59,10 @@ class Response(db.Model):
     # voyagemind_dollar_return = db.Column(db.Float, nullable=True)
     # startup_factors = db.Column(db.String(300), nullable=True)
     # founder_factors = db.Column(db.String(300), nullable=True)
+    attentioncheck_1_duration = db.Column(
+        db.Float, nullable=True
+    )  # Duration in seconds
+    attentioncheck_1_response = db.Column(db.Text, nullable=True)
     gender = db.Column(db.String(20), nullable=True)
     age = db.Column(db.Integer, nullable=True)
     education_level = db.Column(db.String(50), nullable=True)
@@ -81,7 +98,12 @@ class StartupSetAssignment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     participant_id = db.Column(db.String(100), nullable=False, index=True)
     startup_set_code = db.Column(db.String(10), nullable=False, unique=True)
-    assigned_at = db.Column(db.DateTime, default=datetime.utcnow)
+    # assigned_at = db.Column(db.DateTime, default=datetime.utcnow)
+    assigned_at = db.Column(db.DateTime, default=lambda: datetime.now(GERMAN_TZ))
     duration_seconds = db.Column(db.Float, nullable=True)
     used = db.Column(db.Boolean, default=False, nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    # date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    date_created = db.Column(
+        db.DateTime, nullable=False, default=lambda: datetime.now(GERMAN_TZ)
+    )
