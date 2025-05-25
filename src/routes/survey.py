@@ -347,6 +347,7 @@ def investment():
         # Save to database
         if response:
             response.startup_code = set_code
+            response.startup_info = startups
             response.startup_investments = investments
             response.startup_investment_duration = time_spent
             response.last_page_viewed = "survey_bp.investment"

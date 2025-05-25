@@ -51,6 +51,7 @@ class Response(db.Model):
         onupdate=lambda: datetime.now(GERMAN_TZ),
     )
     startup_code = db.Column(db.String(50), nullable=True)
+    startup_info = db.Column(db.JSON, nullable=True)
     # founder_name = db.Column(db.String(100), nullable=True)
     # failure_prob = db.Column(db.Float, nullable=True)
     # success_prob = db.Column(db.Float, nullable=True)
