@@ -70,6 +70,7 @@ class Response(db.Model):
     completion_code = db.Column(db.String(50), nullable=True)
     last_page_viewed = db.Column(db.String(100), nullable=True)
     instructions_answer = db.Column(db.Text, nullable=True)
+    news_info_duration = db.Column(db.Float, nullable=True)  # in seconds
 
     # New fields to track investments and time spent
     startup_investments = db.Column(

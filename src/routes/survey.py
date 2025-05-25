@@ -179,6 +179,16 @@ def news_info():
     generate_news_story_file()
 
     if request.method == "POST":
+        start_time = session.get(
+            "news_info_start_time", datetime.now(GERMAN_TZ).timestamp()
+        )
+        now = datetime.now(GERMAN_TZ).timestamp()
+        attempt_duration = now - start_time
+
+        session["news_info_duration_total"] = (
+            session.get("news_info_duration_total", 0) + attempt_duration
+        )
+        session["news_info_start_time"] = now  # Reset start time for next attempt
         user_answer = request.form.get("news_answer")
         story_type = request.form.get("story_type")
         unique_code = request.form.get("unique_code")
@@ -213,6 +223,10 @@ def news_info():
         response.user_answer = user_answer
         response.is_correct = is_correct
         response.last_page_viewed = "survey_bp.news_info"
+        response.news_info_duration = session.pop(
+            "news_info_duration_total", 0
+        )  # Save total duration
+
         db.session.commit()
         get_flashed_messages()  # <--- THIS clears any old messages BEFORE redirect
         session.pop("story_entry", None)
@@ -232,6 +246,8 @@ def news_info():
     # article_data = (
     #     HOLMES_ARTICLE if story_entry["story"] == "holmes" else CONTROL_ARTICLE
     # )
+
+    session["news_info_start_time"] = datetime.now(GERMAN_TZ).timestamp()
     article_data = (
         HOLMES_ARTICLE
         if story_entry["story"] == "holmes"
@@ -604,6 +620,10 @@ def thank_you():
     response.end_time = datetime.now(GERMAN_TZ)
 
     if response.start_time and response.end_time:
+
+        if response.start_time.tzinfo is None:
+            response.start_time = response.start_time.replace(tzinfo=GERMAN_TZ)
+
         duration = (response.end_time - response.start_time).total_seconds() / 60
         response.total_time_survey_minutes = round(duration, 2)
     response.last_page_viewed = "survey_bp.thank_you"

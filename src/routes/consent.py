@@ -189,7 +189,8 @@ def index():
     if response_record:
         # Set session info from DB
         session["participant_id"] = response_record.participant_id
-        session["start_time"] = response_record.start_time.isoformat()
+        # session["start_time"] = response_record.start_time.isoformat()
+        session["start_time"] = response_record.start_time.timestamp()
         session["question_answered"] = True
 
         if response_record.completed:
