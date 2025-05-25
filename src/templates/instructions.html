@@ -151,7 +151,7 @@
         function noBack() {
             window.history.forward();
         }
-        window.onload = function() {
+        window.onload = function () {
             // Hide the warning initially
             document.getElementById('warning').style.display = 'none';
             noBack();
@@ -162,7 +162,7 @@
         window.onunload = function () {
             void (0);
         };
-        
+
         const options = [
             { id: "strongDisagree", label: "Strongly Disagree", value: "Strongly Disagree" },
             { id: "disagree", label: "Disagree", value: "Disagree" },
@@ -209,15 +209,15 @@
         };
 
         // Validate on submit
-        document.getElementById("attentionCheckForm").addEventListener("submit", function (event) {
-            const checkboxes = document.querySelectorAll('input[name="answer"]:checked');
-            const selectedValues = Array.from(checkboxes).map(cb => cb.value);
-
-            if (!(selectedValues.includes("Agree") && selectedValues.includes("Others") && selectedValues.length === 2)) {
-                event.preventDefault();
-                alert("Your answer is not correct, please read the question again.");
-            }
-        });
+        /*    document.getElementById("attentionCheckForm").addEventListener("submit", function (event) {
+                const checkboxes = document.querySelectorAll('input[name="answer"]:checked');
+                const selectedValues = Array.from(checkboxes).map(cb => cb.value);
+    
+                if (!(selectedValues.includes("Agree") && selectedValues.includes("Others") && selectedValues.length === 2)) {
+                    event.preventDefault();
+                    alert("Your answer is not correct, please read the question again.");
+                }
+            }); */
     </script>
 </body>
 

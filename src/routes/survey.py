@@ -67,17 +67,23 @@ def instructions():
 
     if request.method == "POST":
         selected = request.form.getlist("answer")
+        response.instructions_answer = json.dumps(selected)
 
-        # ✅ Backend validation of checkboxes
-        if set(selected) == {"Agree", "Others"} and len(selected) == 2:
-            response.last_page_viewed = "survey_bp.instructions"
-            db.session.commit()
-            db.session.refresh(response)  # ✅ Ensure the session reflects the DB write
+        response.last_page_viewed = "survey_bp.instructions"
+        db.session.commit()
+        db.session.refresh(response)
 
-            return redirect(url_for("survey_bp.educating"))
-        else:
-            flash("Incorrect answer. Please read the question again.", "error")
-            return redirect(url_for("survey_bp.instructions"))
+        return redirect(url_for("survey_bp.educating"))
+        # # ✅ Backend validation of checkboxes
+        # if set(selected) == {"Agree", "Others"} and len(selected) == 2:
+        #     response.last_page_viewed = "survey_bp.instructions"
+        #     db.session.commit()
+        #     db.session.refresh(response)  # ✅ Ensure the session reflects the DB write
+
+        #     return redirect(url_for("survey_bp.educating"))
+        # else:
+        #     flash("Incorrect answer. Please read the question again.", "error")
+        #     return redirect(url_for("survey_bp.instructions"))
 
     return render_template("instructions.html")
 

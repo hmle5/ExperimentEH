@@ -69,6 +69,7 @@ class Response(db.Model):
     prolific_id = db.Column(db.String(100), nullable=True)
     completion_code = db.Column(db.String(50), nullable=True)
     last_page_viewed = db.Column(db.String(100), nullable=True)
+    instructions_answer = db.Column(db.Text, nullable=True)
 
     # New fields to track investments and time spent
     startup_investments = db.Column(
