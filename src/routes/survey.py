@@ -32,10 +32,16 @@ from models import db, Response
 import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from collections import Counter
+from nltk.corpus import words as nltk_words
+import nltk
+
+nltk.download("words")
 
 GERMAN_TZ = ZoneInfo("Europe/Berlin")
 import json
 import os
+import re
 
 survey_bp = Blueprint("survey_bp", __name__)  # Ensure the correct Blueprint name
 
@@ -428,9 +434,38 @@ def investment():
 
     return render_template("investment_multi.html", startups=startups)
 
+ENGLISH_WORDS = set(nltk_words.words())
+
+def is_english_word(word):
+    return word.lower() in ENGLISH_WORDS
+
+ALLOWED_CHARS_PATTERN = re.compile(r"^[a-zA-Z0-9’'“”\"(),.:;!?-]+$")
+
+def is_gibberish(text):
+    words = [w for w in text.strip().split() if w]
+    if len(words) < 10:
+        return True
+
+    #mostly_short = sum(1 for w in words if len(w) < 3) / len(words) > 0.3
+    mostly_short = sum(1 for w in words if len(w) < 3) / len(words) > 0.7
+    unique_ratio = len(set(w.lower() for w in words)) / len(words)
+    #too_repetitive = unique_ratio < 0.6
+    too_repetitive = unique_ratio < 0.4
+    non_alpha = (
+        sum(1 for w in words if not ALLOWED_CHARS_PATTERN.fullmatch(w)) / len(words) > 0.3
+    )
+
+    # New: how many words aren't in the dictionary
+    unknown_words = sum(1 for w in words if not is_english_word(w))
+    unknown_ratio = unknown_words / len(words)
+
+    return mostly_short or too_repetitive or non_alpha or unknown_ratio > 0.4
+
 
 @survey_bp.route("/investment_approach", methods=["GET", "POST"])
 def investment_approach():
+    error = None
+
     if "participant_id" not in session:
         return redirect(url_for("main.index"))
 
@@ -440,12 +475,9 @@ def investment_approach():
     if request.method == "POST":
         approach_text = request.form.get("investment_approach", "").strip()
 
-        if not approach_text or len(approach_text.split()) < 15:
-            flash(
-                "Please write at least 15 words to describe your investment approach.",
-                "error",
-            )
-            return redirect(url_for("survey_bp.investment_approach"))
+        if not approach_text or len(approach_text.split()) < 10 or is_gibberish(approach_text):
+            error = "Please write at least 10 meaningful English words to describe your investment approach."
+            return render_template("investment_approach.html", error=error, investment_approach=approach_text)
 
         response.investment_approach = approach_text
         response.last_page_viewed = "survey_bp.investment_approach"

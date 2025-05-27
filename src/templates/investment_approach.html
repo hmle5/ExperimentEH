@@ -111,9 +111,12 @@
             const words = text.trim().split(/\s+/).filter(word => word.length > 0);
             const uniqueWords = new Set(words.map(w => w.toLowerCase()));
 
-            const mostlyShort = words.filter(w => w.length < 3).length / words.length > 0.4;
-            const tooRepetitive = uniqueWords.size / words.length < 0.5;
-            const nonAlpha = words.filter(w => !/^[a-zA-Z]+$/.test(w)).length / words.length > 0.3;
+            //const mostlyShort = words.filter(w => w.length < 3).length / words.length > 0.4;
+            const mostlyShort = words.filter(w => w.length < 3).length / words.length > 0.7;
+            //const tooRepetitive = uniqueWords.size / words.length < 0.5;
+            const tooRepetitive = uniqueWords.size / words.length < 0.4;
+            //const nonAlpha = words.filter(w => !/^[a-zA-Z]+$/.test(w)).length / words.length > 0.3;
+            const nonAlpha = words.filter(w => !/^[a-zA-Z0-9’'“”"(),.:;!?-]+$/.test(w)).length / words.length > 0.3;
 
             return mostlyShort || tooRepetitive || nonAlpha;
         }
@@ -124,7 +127,8 @@
             const button = document.getElementById("continueButton");
             const warning = document.getElementById("validationWarning");
 
-            if (wordCount >= 15 && !isGibberish(text)) {
+
+            if (wordCount >= 10 && !isGibberish(text)) {
                 button.disabled = false;
                 warning.style.display = "none";
             } else {
@@ -157,7 +161,7 @@
                         <p class="mt-3 "><strong> Please briefly explain in the box below 
                             the approach you used when allocating your investment funds among the start-ups in the portfolio.</strong> </p>
 
-                        <p class="mt-5 text-muted fst-italic">Please write <strong>at least 15 words</strong> using complete, coherent sentences to
+                        <p class="mt-5 text-muted fst-italic">Please write <strong>at least 10 words</strong> to
                         express your thoughts. You will be able to click the arrow button to continue once you've typed the minimum number of words.</p>
 
                         {% if error %}
@@ -173,7 +177,7 @@
                                     oninput="validateInput()"></textarea>
                             </div>
                             
-                        
+                            
 
                             <div class="submit-btn-container">
                                 <button type="submit" class="btn custom-btn" id="continueButton" disabled>

@@ -99,17 +99,20 @@ ENGLISH_WORDS = set(nltk_words.words())
 def is_english_word(word):
     return word.lower() in ENGLISH_WORDS
 
+ALLOWED_CHARS_PATTERN = re.compile(r"^[a-zA-Z0-9’'“”\"(),.:;!?-]+$")
 
 def is_gibberish(text):
     words = [w for w in text.strip().split() if w]
     if len(words) < 15:
         return True
 
-    mostly_short = sum(1 for w in words if len(w) < 3) / len(words) > 0.3
+    #mostly_short = sum(1 for w in words if len(w) < 3) / len(words) > 0.3
+    mostly_short = sum(1 for w in words if len(w) < 3) / len(words) > 0.6
     unique_ratio = len(set(w.lower() for w in words)) / len(words)
-    too_repetitive = unique_ratio < 0.6
+    #too_repetitive = unique_ratio < 0.6
+    too_repetitive = unique_ratio < 0.4
     non_alpha = (
-        sum(1 for w in words if not re.fullmatch(r"[a-zA-Z]+", w)) / len(words) > 0.2
+        sum(1 for w in words if not ALLOWED_CHARS_PATTERN.fullmatch(w)) / len(words) > 0.3
     )
 
     # New: how many words aren't in the dictionary
@@ -147,7 +150,7 @@ def attentioncheck_1():
         elif is_too_fast():
             error = "Please take more time to consider your answer."
         elif is_gibberish(response_text):
-            error = "Your response appears repetitive or nonsensical. Please provide a real opinion with at least 15 meaningful words."
+            error = "Please type at least 15 real words. Avoid copy-pasting or entering gibberish."
         else:
             # Passed the check
             session["attentioncheck_1_response"] = response_text
