@@ -6,7 +6,7 @@ library(tidyr)
 library(purrr)
 
 
-json_data <- fromJSON(r"(C:\Users\admin\OneDrive\Documents\GitHub\ExperimentEH\src\startup_data.json)", simplifyVector = FALSE)
+json_data <- fromJSON(r"(C:\Users\admin\OneDrive\Documents\GitHub\startup_data.json)", simplifyVector = FALSE)
 #names(json_data)
 startup_df <- do.call(rbind, lapply(json_data, function(entry) {
   # For each startup, attach the parent code and used fields
@@ -61,3 +61,8 @@ startup_df = startup_df %>% dplyr::group_by(code) %>% dplyr::mutate(
 summary(startup_df$nFemInSet)
 summary(startup_df$Fem_Order)
 table(startup_df$Fem_Order)
+
+
+#check n of story codes generated
+stories_data <- fromJSON(r"(C:\Users\admin\OneDrive\Documents\GitHub\news_story.json)")
+sum(stories_data$used==FALSE)
