@@ -32,13 +32,13 @@ Ms. Holmes, a Stanford University dropout who founded her company, Theranos, at 
 With that carefully crafted pitch, Ms. Holmes, whose striking stage presence in a uniform of black turtlenecks drew comparisons to Steve Jobs, became an overnight celebrity, featured on magazine covers and richest-woman lists and in glowing articles.
 Her fall — and the near-collapse of Theranos — has been equally dramatic in the last few years. On Wednesday, the Securities and Exchange Commission charged Ms. Holmes, now 34, with widespread fraud, accusing her of exaggerating — even lying — about her technology while raising $700 million from investors.""",
     "source": "The New York Times",
-    "question": "What was the product promised by Elizabeth Holmes’ start-up and what happened to it?",
+    "question": "What was the product introduced by Elizabeth Holmes’ start-up, Theranos, and what happened to it?",
     "options": [
-        "The product was a medical device that could cure cancer. However, it was not cleared for approval to be used in hospitals.",
-        "The product was an invention that could diagnose diabetes. However, it was not successful in achieving a market scale-up.",
-        "The product was a technology that could diagnose illnesses using minimal blood samples. However, it was accused of fraud.",
+        "Theranos offered a medical device that could cure various forms of cancer. However, its founder was charged with lying that the product was approved to be used in hospitals.",
+        "Theranos introduced a technology that could treat a range of illnesses. However, its founder was accused of overpricing the technology and deliberately deceiving customers.",
+        "Theranos offered a product that could diagnose illnesses using minimal blood samples. However, its founder was charged with promoting a fraudulent technology and defrauding investors.",
     ],
-    "correct_answer": "The product was a technology that could diagnose illnesses using minimal blood samples. However, it was accused of fraud.",
+    "correct_answer": "Theranos offered a product that could diagnose illnesses using minimal blood samples. However, its founder was charged with promoting a fraudulent technology and defrauding investors.",
 }
 
 CONTROL_ARTICLE = {
@@ -84,10 +84,11 @@ def generate_news_story_file():
 
     # Generate 500 unique entries for each story type
     # Pilot 1: 90 unique entries for each story type
+    # Pilot 3: Keep Holmes and control_fraud and generate 60 each for a 100-parti run
     stories = []
-    for _ in range(90):
+    for _ in range(60):
         stories.append({"code": generate_code(), "used": False, "story": "holmes"})
-        stories.append({"code": generate_code(), "used": False, "story": "control_news"})
+        #stories.append({"code": generate_code(), "used": False, "story": "control_news"})
         stories.append({"code": generate_code(), "used": False, "story": "control_fraud_news"})
 
     # Save to JSON file
