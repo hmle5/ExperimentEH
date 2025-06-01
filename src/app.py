@@ -34,8 +34,8 @@ def create_app():
     # # Define the allowed survey navigation flow
     # SURVEY_FLOW = [
     #     "survey_bp.instructions",
-    #     "survey_bp.educating",
-    #     "survey_bp.phase_control",
+    #     "survey_bp.information",
+    #     "survey_bp.phase",
     #     "survey_bp.news_info",
     #     "survey_bp.investment",
     #     "survey_bp.investment_approach",
@@ -47,8 +47,8 @@ def create_app():
 
     SURVEY_FLOW = [
         "survey_bp.instructions",
-        "survey_bp.educating",
-        "survey_bp.phase_control",
+        "survey_bp.information",
+        "survey_bp.phase",
         "survey_bp.news_info",
         "survey_bp.investment",
         "survey_bp.investment_approach",

@@ -66,11 +66,11 @@ Why did the SEC choose to issue this reminder now? The agency did not say. But w
     "source": "The National Law Review and U.S. Chamber of Commerce",
     "question": "What was the reminder issued by the U.S. Securities and Exchange Commission (SEC), and why did the agency do it?",
     "options": [
-        "The SEC emphasized the value of the start-up culture in unlocking company potential, amid the positive outlook for high-tech investments.",
+        "The SEC emphasized the ineffectiveness of the start-up culture in unlocking company potential, amid the positive outlook for high-tech investments.",
         "The SEC warned that unrealistic growth projections by start-ups misled investors and customers, thus worsening the current stock market.",
-        "The SEC reminded founders and investors that the startup culture often exaggerates a company's true potential, amid overenthusiasm around AI.",
+        "The SEC reminded founders and investors that the start-up culture often exaggerates a company's true potential, amid overenthusiasm around AI.",
     ],
-    "correct_answer": "The SEC reminded founders and investors that the startup culture often exaggerates a company's true potential, amid overenthusiasm around AI.",
+    "correct_answer": "The SEC reminded founders and investors that the start-up culture often exaggerates a company's true potential, amid overenthusiasm around AI.",
 }
 
 

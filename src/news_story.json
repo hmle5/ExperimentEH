@@ -6,7 +6,7 @@
     },
     {
         "code": "2Z42VAM5",
-        "used": false,
+        "used": true,
         "story": "control_fraud_news"
     },
     {
@@ -111,7 +111,7 @@
     },
     {
         "code": "EY3WN8NX",
-        "used": false,
+        "used": true,
         "story": "holmes"
     },
     {
@@ -286,7 +286,7 @@
     },
     {
         "code": "BNX42OAO",
-        "used": false,
+        "used": true,
         "story": "control_fraud_news"
     },
     {
@@ -386,7 +386,7 @@
     },
     {
         "code": "H96R9KJ9",
-        "used": false,
+        "used": true,
         "story": "control_fraud_news"
     },
     {

@@ -128,19 +128,19 @@
                                 minutes</strong> to complete this questionnaire. You will earn <strong>a reward of
                                 $3</strong> for participating.
                         </p>
-                        <p>To complete the questionnaire and earn this reward, you will need to read all the instructions
+                        <p>To complete the questionnaire and earn this reward, you will need to read all instructions
                             carefully.</p>
 
-                        <p class="mb-4">You also have the chance to earn <strong> an additional bonus reward of $1</strong> if 
-                            your performance in the main task of the survey ranks among the top 25% participants with best results.</p>
+                        <p class="mb-4"><strong>You also have the chance to win an additional bonus reward of $2 if 
+                            your performance in the main task of the survey ranks among the top 25% participants with best results.</strong></p>
 
                         <hr />
 
                         <form method="POST" action="{{ url_for('main.index') }}">
                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <div class="mb-5">
-                                <label for="prolific_id" class="form-label fw-bold">To confirm you have read and understood the rewards for 
-                                    participating in this study, please enter your Prolific ID in the box below. Make sure to enter it correctly 
+                                <label for="prolific_id" class="form-label ">To confirm you have read and understood the rewards for 
+                                    participating in this study, please enter <strong>your Prolific ID</strong> in the box below. Make sure to enter it correctly 
                                     so we can verify your participation.
                                 </label>
                                 <input type="text" class="form-control" id="prolific_id" name="prolific_id"

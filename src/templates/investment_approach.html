@@ -112,8 +112,8 @@
             const uniqueWords = new Set(words.map(w => w.toLowerCase()));
 
             const mostlyShort = words.filter(w => w.length < 3).length / words.length > 0.4;
-            const tooRepetitive = uniqueWords.size / words.length < 0.5;
-            const nonAlpha = words.filter(w => !/^[a-zA-Z]+$/.test(w)).length / words.length > 0.3;
+            const tooRepetitive = uniqueWords.size / words.length < 0.6;
+            const nonAlpha = words.filter(w => !/^[a-zA-Z0-9’'“”"(),.:;!?-]+$/.test(w)).length / words.length > 0.3;
 
             return mostlyShort || tooRepetitive || nonAlpha;
         }
@@ -124,7 +124,8 @@
             const button = document.getElementById("continueButton");
             const warning = document.getElementById("validationWarning");
 
-            if (wordCount >= 15 && !isGibberish(text)) {
+
+            if (wordCount >= 10 && !isGibberish(text)) {
                 button.disabled = false;
                 warning.style.display = "none";
             } else {
@@ -157,8 +158,9 @@
                         <p class="mt-3 "><strong> Please briefly explain in the box below 
                             the approach you used when allocating your investment funds among the start-ups in the portfolio.</strong> </p>
 
-                        <p class="mt-5 text-muted fst-italic">Please write <strong>at least 15 words</strong> using complete, coherent sentences to
-                        express your thoughts. You will be able to click the arrow button to continue once you've typed the minimum number of words.</p>
+                        <p class="mt-4 fst-italic">Please write <strong>at least 10 words</strong> to
+                        express your thoughts. 
+                        Once you have typed the minimum number of words, the arrow button will activate so you can continue.</p>
 
                         {% if error %}
                         <div class="text-danger mb-4 text-center fw-bold">
@@ -173,7 +175,7 @@
                                     oninput="validateInput()"></textarea>
                             </div>
                             
-                        
+                            
 
                             <div class="submit-btn-container">
                                 <button type="submit" class="btn custom-btn" id="continueButton" disabled>

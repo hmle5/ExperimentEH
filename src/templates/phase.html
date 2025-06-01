@@ -118,7 +118,7 @@
 
                 <div class="card-body">
 
-                    <p class="mt-3 mb-3 text-muted fst-italic">Please read the information carefully to answer the
+                    <p class="mt-3 mb-3 fst-italic">Please read the information carefully to answer the
                         question.</p>
 
                     <p>
@@ -128,7 +128,7 @@
                         Please make sure that you read the news thoroughly.
                     </p>
 
-                    <form method="POST" action="{{ url_for('survey_bp.phase_control') }}"
+                    <form method="POST" action="{{ url_for('survey_bp.phase') }}"
                         onsubmit="return validatePhaseSelection()">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
