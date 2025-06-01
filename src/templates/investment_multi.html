@@ -138,7 +138,7 @@
         /* Initially hide the formula */
         #investmentFormula {
             display: none;
-            margin-top: -20px;
+            margin-top: -30px;
             padding: 0;
             line-height: 1;
             overflow-x: auto;
@@ -146,9 +146,20 @@
         }
 
         #investmentFormula div {
-            margin-top: -20px;
-            padding: 0;
-            line-height: 1;
+            margin-top: -10px;
+            padding: 10px;
+            line-height: 1.2;
+        }
+
+        .formula-wrapper {
+            max-width: 100%;
+            margin: 20px 20px;
+            padding: 5px;
+            white-space: normal;
+            overflow-x: auto;
+            line-height: 1.2;
+            background-color: #ffffff;
+            text-align: justify;
         }
 
         .view-formula-link {
@@ -197,7 +208,7 @@
                             As an investor, your role includes screening start-up applications for investment. <strong>Your task now is to 
                             allocate a hypothetical budget of $300,000 across a portfolio of six early-stage start-ups. </strong>
                             These start-ups are based on real business cases which offer innovative solutions with success potential. 
-                            Each profile includes key information about the product, founder, and valuation. 
+                            <!-- Each profile includes key information about the product, founder, and valuation. -->
                         </p>
                         <p>Please rely only on the information provided, as it reflects realistic investment scenarios and is 
                             sufficient for informed decisions. External sources (e.g., online search) should not be used.
@@ -210,16 +221,21 @@
                             <a href="javascript:void(0)" onclick="toggleFormula()" class="view-formula-link">Click here to view the portfolio's return formula</a>
                         </div>
                         <!-- Hidden formula -->
-                        <div id="investmentFormula">
-                            <div>
+                        <div id="investmentFormula" style="display: none;">
+                            <div class="formula-wrapper">
+                                <p class="mt-3">In the formula below, for each start-up, you earn your full investment back if it succeeds and lose 80% if it fails. 
+                                    Your portfolio return is the sum of these outcomes.
+                                </p>
+                                <div>
                                 $$ 
                                 \text{return} = \sum_{i \in \text{succeed}} (\text{investment_startup}_i \times 100\%) + \sum_{j \in \text{fail}} (\text{investment_startup}_j \times -80\%) 
                                 $$
+                                </div>
                             </div>
                         </div>
 
                         <p>
-                            <strong>Bonus reward:</strong> Participants whose portfolio investment return ranks within the top 25% will receive a bonus reward of $1. 
+                            <strong>Bonus reward: Participants whose portfolio investment return ranks within the top 25% will receive a bonus reward of $2. </strong> 
                         </p>
 
         
@@ -268,10 +284,10 @@
                         <span class="section-text">{{ startup.Assigned_Founder or "Unknown" }}{% if startup.Founder_age %}, age {{ startup.Founder_age }}, {{ startup.Founder_Nstartups or "No information available" }}{% endif %}</span>
                     </div>
 
-                    <div>
+                    <!-- <div>
                         <span class="section-label">Valuation:</span>
                         <span class="section-text">{{ startup.Evaluation_sentence or "No evaluation available" }}</span>
-                    </div>
+                    </div> -->
 
                     <div style="margin-bottom: 30px;"></div>
 
