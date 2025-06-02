@@ -71,26 +71,50 @@ def instructions():
     participant_id = session["participant_id"]
     response = Response.query.filter_by(participant_id=participant_id).first()
 
+    # # Time tracking for this attempt
+    # attempt_start = session.get(
+    #         "instruction_start", datetime.now(GERMAN_TZ).timestamp()
+    #     )
+    # attempt_duration = datetime.now(GERMAN_TZ).timestamp() - attempt_start
+
+    # session["instruction_duration"] = (
+    #         session.get("instruction_duration", 0) + attempt_duration
+    #     )
+    
     if request.method == "POST":
+
+        start_time = session.get(
+            "instruction_start", datetime.now(GERMAN_TZ).timestamp()
+        )
+        now = datetime.now(GERMAN_TZ).timestamp()
+        attempt_duration = now - start_time
+
+        session["instruction_duration"] = (
+            session.get("instruction_duration", 0) + attempt_duration
+        )
+        session["instruction_start"] = now 
         selected = request.form.getlist("answer")
-        response.instructions_answer = json.dumps(selected)
+        # response.instructions_answer = json.dumps(selected)
+        # response.last_page_viewed = "survey_bp.instructions"
+        # db.session.commit()
+        # db.session.refresh(response)
 
-        response.last_page_viewed = "survey_bp.instructions"
-        db.session.commit()
-        db.session.refresh(response)
+        # return redirect(url_for("survey_bp.information"))
 
-        return redirect(url_for("survey_bp.information"))
-        # # ✅ Backend validation of checkboxes
-        # if set(selected) == {"Agree", "Others"} and len(selected) == 2:
-        #     response.last_page_viewed = "survey_bp.instructions"
-        #     db.session.commit()
-        #     db.session.refresh(response)  # ✅ Ensure the session reflects the DB write
+        # ✅ Backend validation of checkboxes
+        if set(selected) == {"Agree", "Others"} and len(selected) == 2:
+            response.last_page_viewed = "survey_bp.instructions"
+            response.instruction_duration = session.pop(
+            "instruction_duration", 0)
+        
+            db.session.commit()
+            db.session.refresh(response)  # ✅ Ensure the session reflects the DB write
 
-        #     return redirect(url_for("survey_bp.information"))
-        # else:
-        #     flash("Incorrect answer. Please read the question again.", "error")
-        #     return redirect(url_for("survey_bp.instructions"))
-
+            return redirect(url_for("survey_bp.information"))
+        else:
+            flash("Incorrect answer. Please read the question again.", "error")
+            return redirect(url_for("survey_bp.instructions"))
+    session["instruction_start"] = datetime.now(GERMAN_TZ).timestamp()
     return render_template("instructions.html")
 
 
