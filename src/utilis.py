@@ -34,11 +34,11 @@ Her fall — and the near-collapse of Theranos — has been equally dramatic in 
     "source": "The New York Times",
     "question": "What was the product introduced by Elizabeth Holmes’ start-up, Theranos, and what happened to it?",
     "options": [
-        "Theranos offered a medical device that could cure various forms of cancer. However, its founder was charged with lying that the product was approved to be used in hospitals.",
-        "Theranos introduced a technology that could treat a range of illnesses. However, its founder was accused of overpricing the technology and deliberately misleading customers.",
-        "Theranos offered a product that could diagnose illnesses using minimal blood samples. However, its founder was charged with promoting a fake technology and defrauding investors.",
+        "Theranos offered a medical device that could cure various forms of cancer. However, its founder was charged with overstating that the product was approved to be used in hospitals.",
+        "Theranos introduced a technology that could treat a range of illnesses. However, its founder was accused of overpricing the technology and misleading customers.",
+        "Theranos offered a technology that could diagnose illnesses using minimal blood samples. However, its founder was charged with promoting a fraudulent product and misleading investors.",
     ],
-    "correct_answer": "Theranos offered a product that could diagnose illnesses using minimal blood samples. However, its founder was charged with promoting a fake technology and defrauding investors.",
+    "correct_answer": "Theranos offered a technology that could diagnose illnesses using minimal blood samples. However, its founder was charged with promoting a fraudulent product and misleading investors.",
 }
 
 CONTROL_ARTICLE = {
@@ -66,7 +66,7 @@ Why did the SEC choose to issue this reminder now? The agency did not say. But w
     "source": "The National Law Review and U.S. Chamber of Commerce",
     "question": "What was the reminder issued by the U.S. Securities and Exchange Commission (SEC), and why did the agency do it?",
     "options": [
-        "The SEC emphasized the ineffectiveness of the start-up culture in unlocking company potential, amid the positive outlook for high-tech investments.",
+        "The SEC emphasized the value of the start-up culture in unlocking company potential, amid the positive outlook for high-tech investments.",
         "The SEC warned that unrealistic growth projections by start-ups misled investors and customers, thus worsening the current stock market.",
         "The SEC reminded founders and investors that the start-up culture often exaggerates a company's true potential, amid overenthusiasm around AI.",
     ],

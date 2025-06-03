@@ -112,9 +112,9 @@
             const words = text.trim().split(/\s+/).filter(word => word.length > 0);
             const uniqueWords = new Set(words.map(w => w.toLowerCase()));
 
-            const mostlyShort = words.filter(w => w.length < 3).length / words.length > 0.4;
-            const tooRepetitive = uniqueWords.size / words.length < 0.5;
-            const nonAlpha = words.filter(w => !/^[a-zA-Z]+$/.test(w)).length / words.length > 0.3;
+            const mostlyShort = words.filter(w => w.length < 3).length / words.length > 0.3;
+            const tooRepetitive = uniqueWords.size / words.length < 0.6;
+            const nonAlpha = words.filter(w => !/^[a-zA-Z]+$/.test(w)).length / words.length > 0.2;
 
             return mostlyShort || tooRepetitive || nonAlpha;
         }
@@ -165,9 +165,9 @@
                             the idea of <strong>shortening the work week</strong>. The stance you express will not impact your 
                             eligibility to participate in this study.</p>
                         
-                        <p class="mt-3 mb-3 fst-italic">Please write <strong>at least 15 words</strong> using at least 2 complete, coherent sentences. 
-                            Avoid copying, or entering only short words or gibberish. 
-                            Once you have typed the minimum number of words, the arrow button will activate so you can continue.</p>
+                        <p class="mt-3 mb-3 text-muted fst-italic">Please write <strong>at least 15 words</strong> using complete, coherent sentences. 
+                            Avoid copy-pasting, entering only short words or gibberish. 
+                            You will be able to click the arrow button to continue once you've typed the minimum number of words.</p>
                         
                         {% if error %}
                         <div class="text-danger mb-4 text-center fw-bold">

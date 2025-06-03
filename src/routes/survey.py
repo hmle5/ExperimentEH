@@ -102,7 +102,7 @@ def instructions():
         # return redirect(url_for("survey_bp.information"))
 
         # ✅ Backend validation of checkboxes
-        if set(selected) == {"Agree", "Others"} and len(selected) == 2:
+        if set(selected) == {"Disagree" ,"Strongly Agree", "Others"} and len(selected) == 3:
             response.last_page_viewed = "survey_bp.instructions"
             response.instruction_duration = session.pop(
             "instruction_duration", 0)
@@ -470,11 +470,11 @@ def is_gibberish(text):
     if len(words) < 10:
         return True
 
-    mostly_short = sum(1 for w in words if len(w) < 3) / len(words) > 0.4
+    mostly_short = sum(1 for w in words if len(w) < 3) / len(words) > 0.3
     unique_ratio = len(set(w.lower() for w in words)) / len(words)
     too_repetitive = unique_ratio < 0.6
     non_alpha = (
-        sum(1 for w in words if not ALLOWED_CHARS_PATTERN.fullmatch(w)) / len(words) > 0.3
+        sum(1 for w in words if not ALLOWED_CHARS_PATTERN.fullmatch(w)) / len(words) > 0.2
     )
 
     # New: how many words aren't in the dictionary

@@ -119,7 +119,7 @@ def is_gibberish(text):
     return mostly_short or too_repetitive or non_alpha or unknown_ratio > 0.4
 
 
-def is_missing_sentences(text, min_sentences=2):
+def is_missing_sentences(text, min_sentences=1):
     # Count sentence-ending punctuation marks
     sentence_endings = re.findall(r"[.!?]", text)
     if len(sentence_endings) < min_sentences:
@@ -174,9 +174,9 @@ def attentioncheck_1():
         elif is_too_fast():
             error = "Please take more time to consider your answer."
         elif is_gibberish(response_text):
-            error = "Your response appears repetitive or nonsensical or contains too many short words. Please provide a real opinion with at least 15 meaningful words."
+            error = "Your response appears repetitive, nonsensical or contains too many short words. Please provide a meaningful answer with at least 15 words."
         elif is_missing_sentences(response_text):
-            error = "Please write at least 2 complete sentences with proper punctuation. Avoid lists of single words."   
+            error = "Please write at least one complete sentence with relevant content and a punctuation mark. Avoid lists of single words."   
         else:
             # Passed the check
             session["attentioncheck_1_response"] = response_text

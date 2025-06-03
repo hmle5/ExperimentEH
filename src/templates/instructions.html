@@ -212,9 +212,9 @@
                 const checkboxes = document.querySelectorAll('input[name="answer"]:checked');
                 const selectedValues = Array.from(checkboxes).map(cb => cb.value);
     
-                if (!(selectedValues.includes("Agree") && selectedValues.includes("Others") && selectedValues.length === 2)) {
+                if (!(selectedValues.includes("Disagree") && selectedValues.includes("Strongly Agree") && selectedValues.includes("Others") && selectedValues.length === 3)) {
                     event.preventDefault();
-                    alert("Your answer is not correct, please read the question again.");
+                    alert("Incorrect answer. Please read the question again.");
                 }
             }); 
     </script>
