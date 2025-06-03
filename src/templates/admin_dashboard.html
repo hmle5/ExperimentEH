@@ -194,12 +194,17 @@
                         <th>gender</th>
                         <th>education</th>
                         <th>completed</th>
+                        <th>completion_code</th>
                         <th>start</th>
                         <th>end</th>
                         <th>total_duration</th>
+                        <th>attention_check1</th>
+                        <th>attention_check1_duration</th>
+                        <th>attention_check2</th>
+                        <th>attention_check2_duration</th>
                         <th>news</th>
+                        <th>news_duration</th>
                         <th>startup_set</th>
-                        <th>completion_code</th>
                         <th>investment_duration</th>
                         <th>invest_amounts</th>
                         <th>invest_approach</th>
@@ -215,12 +220,17 @@
                         <td>{{ r.gender }}</td>
                         <td>{{ r.education_level }}</td>
                         <td>{% if r.completed %}✅{% else %}❌{% endif %}</td>
+                        <td>{{ r.completion_code }}</td>
                         <td>{{ r.start_time }}</td>
                         <td>{{ r.end_time }}</td>
                         <td>{{ r.total_time_survey_minutes }}</td>
+                        <td>{{ r.attentioncheck_1_response }}</td>
+                        <td>{{ r.attentioncheck_1_duration }}</td>
+                        <td>{{ r.instructions_answer }}</td>
+                        <td>{{ r.instruction_duration }}</td>
                         <td>{{ r.story_type }}</td>
+                        <td>{{ r.news_info_duration }}</td>
                         <td>{{ r.startup_code }}</td>
-                        <td>{{r.completion_code }}</td>
                         <td>{{ r.startup_investment_duration }}</td>
                         <td>{{ r.startup_investments }}</td>
                         <td>{{ r.investment_approach }}</td>
