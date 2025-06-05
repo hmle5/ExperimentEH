@@ -29,7 +29,7 @@ class Response(db.Model):
         nullable=False,
         unique=True,
     )
-    participant_id = db.Column(db.String(100), unique=True, nullable=False)
+    participant_id = db.Column(db.String(100), unique=True, nullable=True)
     unique_code = db.Column(db.String(50), unique=True, nullable=True)
     story_type = db.Column(db.String(20), nullable=True)  # Track which story was shown
     user_answer = db.Column(db.String(300), nullable=True)  # User's answer
@@ -73,8 +73,6 @@ class Response(db.Model):
     instructions_answer = db.Column(db.Text, nullable=True)
     news_info_duration = db.Column(db.Float, nullable=True)  # in seconds
     instruction_duration = db.Column(db.Float, nullable=True)
-    
-
 
     # New fields to track investments and time spent
     startup_investments = db.Column(
