@@ -43,38 +43,50 @@
 
         /* Custom color for header */
         .custom-header {
-            background-color: white; /* Dark blue background */
-            color: rgb(5, 40, 80); /* White text */
-            padding: 15px 20px; /* Added padding for spacing */
+            background-color: white;
+            /* Dark blue background */
+            color: rgb(5, 40, 80);
+            /* White text */
+            padding: 15px 20px;
+            /* Added padding for spacing */
             text-align: left;
-            border-bottom: none !important; /* Center the header text */
+            border-bottom: none !important;
+            /* Center the header text */
             font-weight: bold;
         }
 
         .custom-header h3 {
-            margin-bottom: 0px; /* Reduces vertical space under text */
+            margin-bottom: 0px;
+            /* Reduces vertical space under text */
             font-weight: bold;
         }
 
         /* Custom color for button */
         .custom-btn {
-            background-color: rgb(0, 80, 180); 
+            background-color: rgb(0, 80, 180);
             border: none;
-            color: white; /* White text on the button */
-            padding: 12px 20px; /* Add padding to the button */
-            font-size: 16px; /* Font size for button text */
-            width: 10%; /* Make the button span the full width */
+            color: white;
+            /* White text on the button */
+            padding: 12px 20px;
+            /* Add padding to the button */
+            font-size: 16px;
+            /* Font size for button text */
+            width: 10%;
+            /* Make the button span the full width */
         }
 
         .custom-btn:hover {
-            background-color: rgb(5, 40, 80); /* Darker blue when hovered */
+            background-color: rgb(5, 40, 80);
+            /* Darker blue when hovered */
             color: white;
         }
 
         .submit-btn-container {
             display: flex;
-            justify-content: right; /* Align the button to the center horizontally */
-            margin-top: 20px; /* Add space above the button */
+            justify-content: right;
+            /* Align the button to the center horizontally */
+            margin-top: 20px;
+            /* Add space above the button */
         }
 
         .custom-btn:disabled {
@@ -83,7 +95,6 @@
             cursor: not-allowed;
             opacity: 0.7;
         }
-        
     </style>
 
     <script type="text/javascript">
@@ -91,7 +102,7 @@
         function noBack() {
             window.history.forward();
         }
-        window.onload = function() {
+        window.onload = function () {
             // Hide the warning initially
             document.getElementById('warning').style.display = 'none';
             noBack();
@@ -102,7 +113,7 @@
         window.onunload = function () {
             void (0);
         };
-        
+
         function toggleOtherInput(groupName, inputId) {
             const selected = document.querySelector(`input[name="${groupName}"]:checked`);
             const inputBox = document.getElementById(inputId);
@@ -116,6 +127,7 @@
             }
         }
     </script>
+    <script src="{{ url_for('static', filename='js/disable_copy.js') }}"></script>
 </head>
 
 <body>
@@ -123,97 +135,96 @@
         <div class="row justify-content-center">
             <!-- <div class="col-md-8"> -->
 
-                <div class="card">
-                    <!--
+            <div class="card">
+                <!--
                     <div class="card-header custom-header">
                         <h3>Final Questionnaire</h3>
                     </div>-->
 
-                    <div class="card-body">
-                        <form method="POST" action="{{ url_for('survey_bp.investment_demographic') }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('survey_bp.investment_demographic') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                            <p class="mt-3 mb-4">Before finishing the survey, please provide us with some information about yourself.</p>
+                        <p class="mt-3 mb-4">Before finishing the survey, please provide us with some information about
+                            yourself.</p>
 
-                            <!-- Gender -->
-                            <div class="mb-5">
-                                <label class="form-label"><strong>Your gender:</strong></label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="gender" value="Male"
-                                        id="genderMale" onchange="toggleOtherInput('gender', 'genderOtherBox')"
-                                        required>
-                                    <label class="form-check-label" for="genderMale">Male</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="gender" value="Female"
-                                        id="genderFemale" onchange="toggleOtherInput('gender', 'genderOtherBox')">
-                                    <label class="form-check-label" for="genderFemale">Female</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="gender" value="Other"
-                                        id="genderOther" onchange="toggleOtherInput('gender', 'genderOtherBox')">
-                                    <label class="form-check-label" for="genderOther">Other</label>
-                                </div>
-                                <!-- <div id="genderOtherBox" class="mt-2 d-none">
+                        <!-- Gender -->
+                        <div class="mb-5">
+                            <label class="form-label"><strong>Your gender:</strong></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="gender" value="Male" id="genderMale"
+                                    onchange="toggleOtherInput('gender', 'genderOtherBox')" required>
+                                <label class="form-check-label" for="genderMale">Male</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="gender" value="Female"
+                                    id="genderFemale" onchange="toggleOtherInput('gender', 'genderOtherBox')">
+                                <label class="form-check-label" for="genderFemale">Female</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="gender" value="Other"
+                                    id="genderOther" onchange="toggleOtherInput('gender', 'genderOtherBox')">
+                                <label class="form-check-label" for="genderOther">Other</label>
+                            </div>
+                            <!-- <div id="genderOtherBox" class="mt-2 d-none">
                                     <input type="text" class="form-control" name="gender_other"
                                         placeholder="Please specify">
                                 </div> -->
-                            </div>
+                        </div>
 
-                            <!-- Age -->
-                            <div class="mb-5">
-                                <label for="age" class="form-label"><strong>Your age:</strong></label>
-                                <input type="number" name="age" id="age" class="form-control" required min="10"
-                                    max="120" placeholder="e.g., 30">
-                            </div>
+                        <!-- Age -->
+                        <div class="mb-5">
+                            <label for="age" class="form-label"><strong>Your age:</strong></label>
+                            <input type="number" name="age" id="age" class="form-control" required min="10" max="120"
+                                placeholder="e.g., 30">
+                        </div>
 
-                            <!-- Education -->
-                            <div class="mb-5">
-                                <label class="form-label"><strong>Which education level best describes
-                                        yours?</strong></label>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="education"
-                                        value="High school graduation" id="eduHigh"
-                                        onchange="toggleOtherInput('education', 'educationOtherBox')" required>
-                                    <label class="form-check-label" for="eduHigh">High school graduation</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="education"
-                                        value="Undergraduate degree" id="eduUndergrad"
-                                        onchange="toggleOtherInput('education', 'educationOtherBox')">
-                                    <label class="form-check-label" for="eduUndergrad">Undergraduate degree</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="education"
-                                        value="Graduate degree" id="eduGrad"
-                                        onchange="toggleOtherInput('education', 'educationOtherBox')">
-                                    <label class="form-check-label" for="eduGrad">Graduate degree</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="education" value="Other"
-                                        id="eduOther" onchange="toggleOtherInput('education', 'educationOtherBox')">
-                                    <label class="form-check-label" for="eduOther">Other</label>
-                                </div>
-                                <!-- <div id="educationOtherBox" class="mt-2 d-none">
+                        <!-- Education -->
+                        <div class="mb-5">
+                            <label class="form-label"><strong>Which education level best describes
+                                    yours?</strong></label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="education"
+                                    value="High school graduation" id="eduHigh"
+                                    onchange="toggleOtherInput('education', 'educationOtherBox')" required>
+                                <label class="form-check-label" for="eduHigh">High school graduation</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="education"
+                                    value="Undergraduate degree" id="eduUndergrad"
+                                    onchange="toggleOtherInput('education', 'educationOtherBox')">
+                                <label class="form-check-label" for="eduUndergrad">Undergraduate degree</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="education" value="Graduate degree"
+                                    id="eduGrad" onchange="toggleOtherInput('education', 'educationOtherBox')">
+                                <label class="form-check-label" for="eduGrad">Graduate degree</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="education" value="Other"
+                                    id="eduOther" onchange="toggleOtherInput('education', 'educationOtherBox')">
+                                <label class="form-check-label" for="eduOther">Other</label>
+                            </div>
+                            <!-- <div id="educationOtherBox" class="mt-2 d-none">
                                     <input type="text" class="form-control" name="education_other"
                                         placeholder="Please specify"> -->
-                                </div>
-                            </div>
-
-
-                            <div class="submit-btn-container">
-                                <button type="submit" class="btn custom-btn">
-                                    <i class="bi bi-arrow-right"></i>
-                                </button>
-                            </div>
-                        </form>
-
-                        <!-- <p class="mt-3 text-muted">This data helps us better understand the diversity of our
-                            participants. Thank you!</p> -->
-                    </div>
+                        </div>
                 </div>
+
+
+                <div class="submit-btn-container">
+                    <button type="submit" class="btn custom-btn">
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+                </form>
+
+                <!-- <p class="mt-3 text-muted">This data helps us better understand the diversity of our
+                            participants. Thank you!</p> -->
             </div>
         </div>
+    </div>
+    </div>
     </div>
 </body>
 

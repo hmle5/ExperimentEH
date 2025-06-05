@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/disable_copy.css') }}">
 
     <style>
         body {
@@ -28,42 +29,56 @@
 
         /* Custom color for header */
         .custom-header {
-            background-color: white; /* Dark blue background */
-            color: rgb(5, 40, 80); /* White text */
-            padding: 15px 20px; /* Added padding for spacing */
+            background-color: white;
+            /* Dark blue background */
+            color: rgb(5, 40, 80);
+            /* White text */
+            padding: 15px 20px;
+            /* Added padding for spacing */
             text-align: left;
-            border-bottom: none !important; /* Center the header text */
+            border-bottom: none !important;
+            /* Center the header text */
             font-weight: bold;
         }
 
         .custom-header h3 {
-            margin-bottom: 0px; /* Reduces vertical space under text */
+            margin-bottom: 0px;
+            /* Reduces vertical space under text */
             font-weight: bold;
         }
 
         /* Custom color for button */
         .custom-btn {
-            background-color: rgb(0, 80, 180); 
+            background-color: rgb(0, 80, 180);
             border: none;
-            color: white; /* White text on the button */
-            padding: 12px 20px; /* Add padding to the button */
-            font-size: 16px; /* Font size for button text */
-            width: 10%; /* Make the button span the full width */
+            color: white;
+            /* White text on the button */
+            padding: 12px 20px;
+            /* Add padding to the button */
+            font-size: 16px;
+            /* Font size for button text */
+            width: 10%;
+            /* Make the button span the full width */
         }
 
         .custom-btn:hover {
-            background-color: rgb(5, 40, 80); /* Darker blue when hovered */
+            background-color: rgb(5, 40, 80);
+            /* Darker blue when hovered */
             color: white;
         }
 
         .submit-btn-container {
             display: flex;
-            justify-content: right; /* Align the button to the center horizontally */
-            margin-top: 20px; /* Add space above the button */
+            justify-content: right;
+            /* Align the button to the center horizontally */
+            margin-top: 20px;
+            /* Add space above the button */
         }
+
         .custom-link {
             color: rgb(0, 80, 180);
-            text-decoration: none; /* optional: removes underline */
+            text-decoration: none;
+            /* optional: removes underline */
         }
     </style>
 
@@ -73,7 +88,7 @@
         function noBack() {
             window.history.forward();
         }
-        window.onload = function() {
+        window.onload = function () {
             // Hide the warning initially
             document.getElementById('warning').style.display = 'none';
             noBack();
@@ -85,6 +100,7 @@
             void (0);
         };
     </script>
+    <script src="{{ url_for('static', filename='js/disable_copy.js') }}"></script>
 
 </head>
 
@@ -93,18 +109,18 @@
         <div class="row justify-content-center">
             <!-- <div class="col-md-8"> -->
 
-                <div class="card">
+            <div class="card">
 
-                    <div class="custom-header">
-                        <h3>Consent to participate</h3>
-                    </div>
+                <div class="custom-header">
+                    <h3>Consent to participate</h3>
+                </div>
 
-                    <div id="warning" style="color: #78191f;">
-                        You cannot go back to previous pages to ensure data integrity.
-                    </div>
+                <div id="warning" style="color: #78191f;">
+                    You cannot go back to previous pages to ensure data integrity.
+                </div>
 
-                    <div class="card-body">
-                        <!--
+                <div class="card-body">
+                    <!--
                         <p>We are conducting a survey as part of an academic study. To ensure the
                             accuracy and reliability of the survey results, we need to confirm your participation as a
                             unique user. By collecting user consent, we can track individual responses while maintaining
@@ -113,101 +129,109 @@
                         <p>Please review the consent options below and select your response. Your participation is
                             voluntary, and you may choose not to participate if you wish. By giving your consent, you agree to allow us to process your
                             information as described. We appreciate your understanding and cooperation.</p> -->
-                        
-                            <p class="mt-3">We are conducting this survey as part of an academic study and need your consent to confirm that you are a unique participant. 
-                                This helps ensure the accuracy and reliability of the collected data. Your responses will remain anonymous and 
-                                confidential, and will be used only for this study.</p>
-                            
-                            <h5 class="mt-3 mb-3"><strong>Who is responsible for the study?</strong></h5>
-                            <p>Prof. Dr. Markus Ludwig</p>
-                            <p>Institute of Economics (VWL-Institut)<br>
-                            Technische Universität Braunschweig<br>
-                            Spielmannstraße 9, 38106 Braunschweig, Germany</p>
 
-                            
+                    <p class="mt-3">We are conducting this survey as part of an academic study and need your consent to
+                        confirm that you are a unique participant.
+                        This helps ensure the accuracy and reliability of the collected data. Your responses will remain
+                        anonymous and
+                        confidential, and will be used only for this study.</p>
 
-                            <h5 class="mt-3 mb-3"><strong>What are the purposes of the study?</strong></h5>
-                            <p>In this study, we explore the formation of individual perspectives.</p>
+                    <h5 class="mt-3 mb-3"><strong>Who is responsible for the study?</strong></h5>
+                    <p>Prof. Dr. Markus Ludwig</p>
+                    <p>Institute of Economics (VWL-Institut)<br>
+                        Technische Universität Braunschweig<br>
+                        Spielmannstraße 9, 38106 Braunschweig, Germany</p>
 
 
-                            <h5 class="mt-3 mb-3"><strong>Privacy policy</strong></h5>
-                            <p>This privacy policy outlines how we collect, use, and protect your data in accordance with GDPR. Our primary goal 
-                                is to ensure your personal information remains protected and used transparently.</p>
-                            
-                            <h5>Data collection</h5>
-                            <p>We collect minimal data necessary for your participation in our survey, using an anonymized unique identifier 
-                                generated from your IP address and user agent information. This data is not stored but temporarily used to 
-                                ensure one-time participation.</p>
 
-                            <h5>Data use and retention</h5>
-                            <p>Data collected is solely for the analysis within this study. Per GDPR regulations, the collected data will 
-                                not be retained beyond its immediate purpose. Unique identifiers are masked and non-identifiable.</p>
+                    <h5 class="mt-3 mb-3"><strong>What are the purposes of the study?</strong></h5>
+                    <p>In this study, we explore the formation of individual perspectives.</p>
 
-                            <h5>Your rights</h5>
-                            <ul>
-                            <li>You have the right to access your data and to request its deletion.</li>
-                            <li>You can object to data processing practices that concern you.</li>
-                            <!-- <li>For any concerns, contact us at  [vwl@tu-braunschweig.de].</li> -->
-                            <li>For any concerns, contact us at <a
-                                    href="mailto:vwl@tu-braunschweig.de" class="custom-link">vwl@tu-braunschweig.de</a>.</li>
 
-                            </ul>
+                    <h5 class="mt-3 mb-3"><strong>Privacy policy</strong></h5>
+                    <p>This privacy policy outlines how we collect, use, and protect your data in accordance with GDPR.
+                        Our primary goal
+                        is to ensure your personal information remains protected and used transparently.</p>
 
-                            <h5>Data protection</h5>
-                           <p>Your data is protected using industry-standard methods. We do not share your personal data
-                            with third parties.</p>
+                    <h5>Data collection</h5>
+                    <p>We collect minimal data necessary for your participation in our survey, using an anonymized
+                        unique identifier
+                        generated from your IP address and user agent information. This data is not stored but
+                        temporarily used to
+                        ensure one-time participation.</p>
 
-                           <h5>Changes to this policy</h5>
-                           <p>We may update this policy and will notify you of any significant changes.</p>
+                    <h5>Data use and retention</h5>
+                    <p>Data collected is solely for the analysis within this study. Per GDPR regulations, the collected
+                        data will
+                        not be retained beyond its immediate purpose. Unique identifiers are masked and
+                        non-identifiable.</p>
 
-                            <!-- <p>For detailed information, please visit [Official GDPR Guidelines](https://gdpr-info.eu/).</p> -->
-                            <p>For detailed information, please visit <a href="https://gdpr-info.eu/"
-                                target="_blank" class="custom-link">Official GDPR Guidelines</a>.</p>
-                            
-                            
+                    <h5>Your rights</h5>
+                    <ul>
+                        <li>You have the right to access your data and to request its deletion.</li>
+                        <li>You can object to data processing practices that concern you.</li>
+                        <!-- <li>For any concerns, contact us at  [vwl@tu-braunschweig.de].</li> -->
+                        <li>For any concerns, contact us at <a href="mailto:vwl@tu-braunschweig.de"
+                                class="custom-link">vwl@tu-braunschweig.de</a>.</li>
 
-                            <h5 class="mt-3 mb-3"><strong>Declaration of consent</strong></h5>
-                            <p>Please review the consent options below and select your choice. Participation is voluntary, and by 
-                                consenting, you agree to the use of your responses as described. We appreciate your understanding and 
-                                cooperation.</p>
+                    </ul>
 
-                        <form method="post" action="{{ url_for('main.give_consent') }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="consent" value="denied"
-                                    id="denyConsent">
-                                <label class="form-check-label" for="denyConsent">
-                                    I do not give my consent.
-                                </label>
-                            </div>
+                    <h5>Data protection</h5>
+                    <p>Your data is protected using industry-standard methods. We do not share your personal data
+                        with third parties.</p>
 
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" type="radio" name="consent" value="accepted"
-                                    id="acceptConsent">
-                                <label class="form-check-label" for="acceptConsent">
-                                    I give my consent to participate.
-                                </label>
-                            </div>
+                    <h5>Changes to this policy</h5>
+                    <p>We may update this policy and will notify you of any significant changes.</p>
 
-                            <div class="submit-btn-container">
-                                <button type="submit" class="btn custom-btn">
-                                    <i class="bi bi-arrow-right"></i>
-                                </button>
-                            </div>
+                    <!-- <p>For detailed information, please visit [Official GDPR Guidelines](https://gdpr-info.eu/).</p> -->
+                    <p>For detailed information, please visit <a href="https://gdpr-info.eu/" target="_blank"
+                            class="custom-link">Official GDPR Guidelines</a>.</p>
 
-                        </form>
 
-                        <!--
+
+                    <h5 class="mt-3 mb-3"><strong>Declaration of consent</strong></h5>
+                    <p>Please review the consent options below and select your choice. Participation is voluntary, and
+                        by
+                        consenting, you agree to the use of your responses as described. We appreciate your
+                        understanding and
+                        cooperation.</p>
+
+                    <form method="post" action="{{ url_for('main.give_consent') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="consent" value="denied" id="denyConsent">
+                            <label class="form-check-label" for="denyConsent">
+                                I do not give my consent.
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="radio" name="consent" value="accepted"
+                                id="acceptConsent">
+                            <label class="form-check-label" for="acceptConsent">
+                                I give my consent to participate.
+                            </label>
+                        </div>
+
+                        <div class="submit-btn-container">
+                            <button type="submit" class="btn custom-btn">
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <!--
                         <p class="mt-3 text-muted">By giving your consent, you agree to allow us to process your
                             information as described. We appreciate your understanding and cooperation.</p> -->
-                    </div>
-                    <!-- <div class="mt-3">
+                </div>
+                <!-- <div class="mt-3">
                         <a href="{{ url_for('main.privacy') }}" class="btn btn-secondary">Read Privacy Policy</a>
                     </div> -->
-                </div>
             </div>
         </div>
+    </div>
     </div>
 </body>
 

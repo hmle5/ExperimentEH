@@ -43,38 +43,50 @@
 
         /* Custom color for header */
         .custom-header {
-            background-color: white; /* Dark blue background */
-            color: rgb(5, 40, 80); /* White text */
-            padding: 15px 20px; /* Added padding for spacing */
+            background-color: white;
+            /* Dark blue background */
+            color: rgb(5, 40, 80);
+            /* White text */
+            padding: 15px 20px;
+            /* Added padding for spacing */
             text-align: left;
-            border-bottom: none !important; /* Center the header text */
+            border-bottom: none !important;
+            /* Center the header text */
             font-weight: bold;
         }
 
         .custom-header h3 {
-            margin-bottom: 0px; /* Reduces vertical space under text */
+            margin-bottom: 0px;
+            /* Reduces vertical space under text */
             font-weight: bold;
         }
 
         /* Custom color for button */
         .custom-btn {
-            background-color: rgb(0, 80, 180); 
+            background-color: rgb(0, 80, 180);
             border: none;
-            color: white; /* White text on the button */
-            padding: 12px 20px; /* Add padding to the button */
-            font-size: 1.5rem; /* Font size for button text */
-            width: 50%; /* Make the button span the full width */
+            color: white;
+            /* White text on the button */
+            padding: 12px 20px;
+            /* Add padding to the button */
+            font-size: 1.5rem;
+            /* Font size for button text */
+            width: 50%;
+            /* Make the button span the full width */
         }
 
         .custom-btn:hover {
-            background-color: rgb(5, 40, 80); /* Darker blue when hovered */
+            background-color: rgb(5, 40, 80);
+            /* Darker blue when hovered */
             color: white;
         }
 
         .submit-btn-container {
             display: flex;
-            justify-content: center; /* Align the button to the center horizontally */
-            margin-top: 20px; /* Add space above the button */
+            justify-content: center;
+            /* Align the button to the center horizontally */
+            margin-top: 20px;
+            /* Add space above the button */
         }
 
         .custom-btn:disabled {
@@ -102,7 +114,8 @@
         }
 
         .custom-color {
-            color: #78191f; /* Replace with any hex code or CSS color */
+            color: #78191f;
+            /* Replace with any hex code or CSS color */
             font-size: 1.5rem;
             font-weight: bold;
             text-align: center;
@@ -114,7 +127,7 @@
         function noBack() {
             window.history.forward();
         }
-        window.onload = function() {
+        window.onload = function () {
             // Hide the warning initially
             document.getElementById('warning').style.display = 'none';
             noBack();
@@ -133,38 +146,41 @@
         <div class="row justify-content-center">
             <!-- <div class="col-md-8"> -->
 
-                <div class="card border-success">
+            <div class="card border-success">
 
-                    <div class="custom-header">
-                        <!-- <h3>Survey completed!</h3> -->
+                <div class="custom-header">
+                    <!-- <h3>Survey completed!</h3> -->
+                </div>
+
+                <div class="card-body">
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show"
+                        role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
 
-                    <div class="card-body">
-
-                        {% with messages = get_flashed_messages(with_categories=true) %}
-                          {% if messages %}
-                            {% for category, message in messages %}
-                              <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                              </div>
-                            {% endfor %}
-                          {% endif %}
-                        {% endwith %}
-
-                        <!-- <p class="mt-3 mb-5">Thank you for completing this study. To confirm your 
+                    <!-- <p class="mt-3 mb-5">Thank you for completing this study. To confirm your 
                             participation and receive your rewards, please follow the <strong>three</strong> steps below.</p> -->
 
-                        <p class="mt-3">You are almost there...</p>
-                        
-                        <p class="mt-3">To confirm your 
-                            participation on our system, please first enter the <strong>16-digit completion code</strong> as instructed below.</p>
-                        
-                        <p class="mt-3 mb-5">⚠️ After submitting the code, you will receive your Prolific completion code on the next page. The 16-digit completion code
-                            provided below is NOT your Prolific completion code.
-                        </p>
+                    <p class="mt-3">You are almost there...</p>
 
-                        <!--<p class="fw-bold text-danger">
+                    <p class="mt-3">To confirm your
+                        participation on our system, please first enter the <strong>16-digit completion code</strong> as
+                        instructed below.</p>
+
+                    <p class="mt-3 mb-5">⚠️ After submitting the code, you will receive your Prolific completion code on
+                        the next page. The 16-digit completion code
+                        provided below is NOT your Prolific completion code.
+                    </p>
+
+                    <!--<p class="fw-bold text-danger">
                             ✅ <strong>Important:</strong> To receive your payment on MTurk, you <u>must</u> enter the
                             16-digit completion code shown below on the MTurk task page.
                         </p> 
@@ -172,27 +188,29 @@
                             ⚠️ If this code is not entered correctly, we will not be able to process your compensation.
                         </p> -->
 
-                        
 
-                        <!-- <p>Please complete the short form below to finalize your submission and download your
+
+                    <!-- <p>Please complete the short form below to finalize your submission and download your
                             confirmation.</p> -->
 
-                        <form method="POST" action="{{ url_for('survey_bp.final_page') }}">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <form method="POST" action="{{ url_for('survey_bp.final_page') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-                            <div class="mt-3 mb-3">
-                                <label for="completion_code" class="form-label"><strong>Please copy and paste your 16-digit
-                                        completion code in the box below. Make sure that you enter it correctly so we can verify your completion.</strong></label>
-                                        <div class="alert custom-alert text-center my-4">
-                                            <strong>Your 16-digit system completion code (not Prolific completion code):</strong><br>
-                                            <span class="completion-code">{{ expected_code }}</span>
-                                        </div>
-                                <input type="text" class="form-control" id="completion_code" name="completion_code"
-                                    required placeholder="Paste or enter the 16-digit code here, e.g. ABCD1234WXYZ5678">
+                        <div class="mt-3 mb-3">
+                            <label for="completion_code" class="form-label"><strong>Please copy and paste your 16-digit
+                                    completion code in the box below. Make sure that you enter it correctly so we can
+                                    verify your completion.</strong></label>
+                            <div class="alert custom-alert text-center my-4">
+                                <strong>Your 16-digit system completion code (not Prolific completion
+                                    code):</strong><br>
+                                <span class="completion-code">{{ expected_code }}</span>
                             </div>
+                            <input type="text" class="form-control" id="completion_code" name="completion_code" required
+                                placeholder="Paste or enter the 16-digit code here, e.g. ABCD1234WXYZ5678">
+                        </div>
 
 
-                            <!-- <p class="mt-5 mb-3"><strong>Step 2: To confirm your survey completion on Prolific and receive your rewards, 
+                        <!-- <p class="mt-5 mb-3"><strong>Step 2: To confirm your survey completion on Prolific and receive your rewards, 
                                 please copy and paste the code below on the platform.</strong>
                             </p>
                             <p class="mt-5 text-center"> <strong>Prolific completion code:</strong> 
@@ -200,26 +218,29 @@
                             <p class="mb-5 custom-color">C3CB5BBT
                             </p> -->
 
-                            <p class="mt-5 mb-5" style="color: #78191f; font-size: 1.4rem;"><strong>Click "Receive Prolific Completion Code" button below to get your Prolific completion code on the next page.</strong>
-                            </p>
-                            
+                        <p class="mt-5 mb-5" style="color: #78191f; font-size: 1.4rem;"><strong>Click "Receive Prolific
+                                Completion Code" button below to get your Prolific completion code on the next
+                                page.</strong>
+                        </p>
 
 
-                            <hr class="my-4">
+
+                        <hr class="my-4">
 
 
-                            <p class="mt-3 ">(Optional) If you have any comments or suggestions for this survey, please share with us in the box below.</p>
+                        <p class="mt-3 ">(Optional) If you have any comments or suggestions for this survey, please
+                            share with us in the box below.</p>
 
 
-                            <form method="POST" action="{{ url_for('survey_bp.investment_approach') }}">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                <div class="mb-5">
-                                    <textarea class="form-control" id="survey_feedback" name="survey_feedback" rows="4"
-                                        oninput="validateInput()"></textarea>
-                                </div>
+                        <form method="POST" action="{{ url_for('survey_bp.investment_approach') }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <div class="mb-5">
+                                <textarea class="form-control" id="survey_feedback" name="survey_feedback" rows="4"
+                                    oninput="validateInput()"></textarea>
+                            </div>
 
 
-                        
+
 
                             <div class="submit-btn-container">
                                 <button type="submit" class="btn custom-btn">Receive Prolific Completion Code</button>
@@ -233,10 +254,10 @@
                             next screen, you'll also be able to download a confirmation file containing your Worker ID
                             and completion code.
                         </p> -->
-                    </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </body>
 
