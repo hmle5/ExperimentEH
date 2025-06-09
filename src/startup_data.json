@@ -433,7 +433,7 @@
     },
     {
         "code": "1EWPBXUOVI",
-        "used": false,
+        "used": true,
         "startups": [
             {
                 "Startup_name": "SkyrOn",
@@ -7705,7 +7705,7 @@
     },
     {
         "code": "FUVJ3IDBJ5",
-        "used": false,
+        "used": true,
         "startups": [
             {
                 "Startup_name": "Regenary",

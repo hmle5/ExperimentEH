@@ -106,7 +106,7 @@
     },
     {
         "code": "XTIHX7FW",
-        "used": false,
+        "used": true,
         "story": "control_fraud_news"
     },
     {
@@ -286,7 +286,7 @@
     },
     {
         "code": "PC2XU6IF",
-        "used": false,
+        "used": true,
         "story": "control_fraud_news"
     },
     {
