@@ -102,7 +102,7 @@ def instructions():
         # return redirect(url_for("survey_bp.information"))
 
         # ✅ Backend validation of checkboxes
-        if set(selected) == {"Disagree" ,"Strongly Agree", "Others"} and len(selected) == 3:
+        if set(selected) == {"Agree", "Others"} and len(selected) == 2:
             response.last_page_viewed = "survey_bp.instructions"
             response.instruction_duration = session.pop(
             "instruction_duration", 0)
