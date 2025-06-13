@@ -73,6 +73,7 @@ class Response(db.Model):
     instructions_answer = db.Column(db.Text, nullable=True)
     news_info_duration = db.Column(db.Float, nullable=True)  # in seconds
     instruction_duration = db.Column(db.Float, nullable=True)
+    guess_intention = db.Column(db.Text, nullable=True)
 
     # New fields to track investments and time spent
     startup_investments = db.Column(

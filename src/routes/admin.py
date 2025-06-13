@@ -155,6 +155,7 @@ def export_excel():
             "age": r.age,
             "gender": r.gender,
             "education": r.education_level,
+            "guess_intention": r.guess_intention,
             "survey_feedback": r.survey_feedback,
         }
         for r in responses
@@ -202,6 +203,7 @@ def export_csv():
             "age": r.age,
             "gender": r.gender,
             "education": r.education_level,
+            "guess_intention": r.guess_intention,
             "survey_feedback": r.survey_feedback,
         }
         for r in responses

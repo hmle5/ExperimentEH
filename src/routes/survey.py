@@ -566,6 +566,8 @@ def investment_demographic():
             request.form.get("education_other") if education == "Other" else None
         )
 
+        guess_intention = request.form.get("guess_intention", "").strip()
+
         if not gender or not age or not education:
             flash("Please complete all fields before submitting.", "error")
             return redirect(url_for("survey_bp.investment_demographic"))
@@ -590,6 +592,7 @@ def investment_demographic():
         response.gender = gender
         response.age = age_val
         response.education_level = education
+        response.guess_intention = guess_intention
         response.last_page_viewed = "survey_bp.investment_demographic"
         db.session.commit()
 
