@@ -122,7 +122,7 @@
                         there are participants who do not carefully read the questions and just quickly click
                         through the survey. This means that there are a lot of random answers which compromise the
                         results of research studies. To show that you read the provided information carefully, please
-                        select Strongly Agree and Disagree and Others options as your answer to the next question.
+                        select Agree and Others options as your answer to the next question.
                     </p>
 
                     <form method="POST" action="{{ url_for('survey_bp.instructions') }}" id="attentionCheckForm">
@@ -212,7 +212,7 @@
                 const checkboxes = document.querySelectorAll('input[name="answer"]:checked');
                 const selectedValues = Array.from(checkboxes).map(cb => cb.value);
     
-                if (!(selectedValues.includes("Disagree") && selectedValues.includes("Strongly Agree") && selectedValues.includes("Others") && selectedValues.length === 3)) {
+                if (!(selectedValues.includes("Agree") && selectedValues.includes("Others") && selectedValues.length === 2)) {
                     event.preventDefault();
                     alert("Incorrect answer. Please read the question again.");
                 }
