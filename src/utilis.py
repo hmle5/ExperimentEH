@@ -167,16 +167,20 @@ def load_excel_data(excel_path):
     sheets = pd.read_excel(excel_path, sheet_name=None)
     startup_df = sheets["startup"]
     founder_df = sheets["founder"]
-    value_df = sheets["value"]
+    #value_df = sheets["value"]
+    indicator_df = sheets["indicator"]
+
 
     # Normalize string fields in both DataFrames
-    for df in (startup_df, founder_df, value_df):
     #for df in (startup_df, founder_df):
+    #for df in (startup_df, founder_df, value_df):
+    for df in (startup_df, founder_df, indicator_df):
         for col in df.select_dtypes(include="object").columns:
             df[col] = df[col].apply(normalize_text)
 
-    return startup_df, founder_df, value_df
     #return startup_df, founder_df
+    #return startup_df, founder_df, value_df
+    return startup_df, founder_df, indicator_df
 
 
 def generate_unique_code(existing_codes, length=8):
@@ -188,20 +192,26 @@ def generate_unique_code(existing_codes, length=8):
 
 
 def prepare_randomized_startup_set(
-    startup_df, founder_firstname, evaluation_sentences, set_size
     #startup_df, founder_firstname, set_size
+    #startup_df, founder_firstname, evaluation_sentences, set_size
+    startup_df, founder_firstname, performance_indicator, set_size
+    
 ):
     """Prepare one startup set with normalized data and substituted evaluation sentence."""
     selected_startups = startup_df.sample(n=set_size, replace=False).to_dict(
         orient="records"
     )
     assigned_founders = random.sample(founder_firstname, set_size)
-    assigned_sentences = random.sample(evaluation_sentences, set_size)
+    #assigned_sentences = random.sample(evaluation_sentences, set_size)
+    assigned_indicator = random.sample(performance_indicator, set_size)
+
 
     combined = []
     for i, startup in enumerate(selected_startups):
         founder_fullname = f"{assigned_founders[i]} {startup['Founder_lastname_altered']}"
-        sentence = f"{assigned_sentences[i]} {startup['Valuation_amount']}."
+        #sentence = f"{assigned_sentences[i]} {startup['Valuation_amount']}."
+        indicator_info = f"{assigned_indicator[i]}"
+
 
         combined.append(
             {
@@ -220,7 +230,8 @@ def prepare_randomized_startup_set(
                 ),
                 #"Founder_Nstartups": startup["Founder_Nstartups"],
                 "Assigned_Founder": founder_fullname,
-                "Evaluation_sentence": sentence,
+                #"Evaluation_sentence": sentence,
+                "Performance_indicator": indicator_info
             }
         )
 
@@ -251,15 +262,17 @@ def generate_startup_sets(
     if os.path.exists(output_path):
         return False
 
-    startup_df, founder_df, value_df = load_excel_data(excel_path)
     #startup_df, founder_df = load_excel_data(excel_path)
+    #startup_df, founder_df, value_df = load_excel_data(excel_path)
+    startup_df, founder_df, indicator_df = load_excel_data(excel_path)
 
     # Ensure required fields are present
     startup_df = startup_df.dropna(
         subset=["Startup_name_altered", "Industry", "Product_info_altered"]
     )
     founder_firstname = founder_df["Founder_firstname_altered"].dropna().unique().tolist()
-    evaluation_sentences = value_df["Evaluation_sentence"].dropna().tolist()
+    #evaluation_sentences = value_df["Evaluation_sentence"].dropna().tolist()
+    performance_indicator = indicator_df["performance_indicator"].dropna().tolist()
 
     # Validation
     if len(founder_firstname) < set_size:
@@ -270,8 +283,10 @@ def generate_startup_sets(
 
     for _ in range(num_sets):
         startup_data = prepare_randomized_startup_set(
-            startup_df, founder_firstname, evaluation_sentences, set_size
             #startup_df, founder_firstname, set_size
+            #startup_df, founder_firstname, evaluation_sentences, set_size
+            startup_df, founder_firstname, performance_indicator, set_size
+            
         )
         code = generate_unique_code(used_codes, length=code_length)
         used_codes.add(code)
