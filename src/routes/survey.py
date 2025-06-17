@@ -80,7 +80,7 @@ def instructions():
     # session["instruction_duration"] = (
     #         session.get("instruction_duration", 0) + attempt_duration
     #     )
-    
+
     if request.method == "POST":
 
         start_time = session.get(
@@ -92,7 +92,7 @@ def instructions():
         session["instruction_duration"] = (
             session.get("instruction_duration", 0) + attempt_duration
         )
-        session["instruction_start"] = now 
+        session["instruction_start"] = now
         selected = request.form.getlist("answer")
         # response.instructions_answer = json.dumps(selected)
         # response.last_page_viewed = "survey_bp.instructions"
@@ -104,9 +104,8 @@ def instructions():
         # ✅ Backend validation of checkboxes
         if set(selected) == {"Agree", "Others"} and len(selected) == 2:
             response.last_page_viewed = "survey_bp.instructions"
-            response.instruction_duration = session.pop(
-            "instruction_duration", 0)
-        
+            response.instruction_duration = session.pop("instruction_duration", 0)
+
             db.session.commit()
             db.session.refresh(response)  # ✅ Ensure the session reflects the DB write
 
@@ -280,7 +279,8 @@ def news_info():
     session["news_info_start_time"] = datetime.now(GERMAN_TZ).timestamp()
     article_data = (
         HOLMES_ARTICLE
-        if story_entry["story"] == "holmes" else CONTROL_FRAUD_ARTICLE
+        if story_entry["story"] == "holmes"
+        else CONTROL_FRAUD_ARTICLE
         # else (
         #     BANKMAN_ARTICLE
         #     if story_entry["story"] == "bankman"
@@ -295,7 +295,8 @@ def news_info():
     # image_filename = "holmes.png" if story_entry["story"] == "holmes" else "control.png"
     image_filename = (
         "holmes.png"
-        if story_entry["story"] == "holmes" else "control.png"
+        if story_entry["story"] == "holmes"
+        else "control.png"
         # else (
         #     "bankmanfried.png"
         #     if story_entry["story"] == "bankman"
@@ -458,12 +459,16 @@ def investment():
 
     return render_template("investment_multi.html", startups=startups)
 
+
 ENGLISH_WORDS = set(nltk_words.words())
+
 
 def is_english_word(word):
     return word.lower() in ENGLISH_WORDS
 
+
 ALLOWED_CHARS_PATTERN = re.compile(r"^[a-zA-Z0-9’'“”\"(),.:;!?-]+$")
+
 
 def is_gibberish(text):
     words = [w for w in text.strip().split() if w]
@@ -474,7 +479,8 @@ def is_gibberish(text):
     unique_ratio = len(set(w.lower() for w in words)) / len(words)
     too_repetitive = unique_ratio < 0.6
     non_alpha = (
-        sum(1 for w in words if not ALLOWED_CHARS_PATTERN.fullmatch(w)) / len(words) > 0.2
+        sum(1 for w in words if not ALLOWED_CHARS_PATTERN.fullmatch(w)) / len(words)
+        > 0.2
     )
 
     # New: how many words aren't in the dictionary
@@ -497,9 +503,17 @@ def investment_approach():
     if request.method == "POST":
         approach_text = request.form.get("investment_approach", "").strip()
 
-        if not approach_text or len(approach_text.split()) < 10 or is_gibberish(approach_text):
+        if (
+            not approach_text
+            or len(approach_text.split()) < 10
+            or is_gibberish(approach_text)
+        ):
             error = "Please write at least 10 meaningful words to describe your investment approach."
-            return render_template("investment_approach.html", error=error, investment_approach=approach_text)
+            return render_template(
+                "investment_approach.html",
+                error=error,
+                investment_approach=approach_text,
+            )
 
         response.investment_approach = approach_text
         response.last_page_viewed = "survey_bp.investment_approach"
@@ -669,23 +683,20 @@ def thank_you():
     participant_id = session["participant_id"]
     response = Response.query.filter_by(participant_id=participant_id).first()
 
-    # mturk_id = session.get("mturk_id", "")
-    completion_code = session.get("completion_code", "")
-
-    # Mark survey as completed
-    response.completed = True
-    # response.end_time = datetime.now()
-    response.end_time = datetime.now(GERMAN_TZ)
-
-    if response.start_time and response.end_time:
+    if response.total_time_survey_minutes is None:
+        end = datetime.now(GERMAN_TZ)
+        response.end_time = end
 
         if response.start_time.tzinfo is None:
             response.start_time = response.start_time.replace(tzinfo=GERMAN_TZ)
-
-        duration = (response.end_time - response.start_time).total_seconds() / 60
+        duration = (end - response.start_time).total_seconds() / 60
         response.total_time_survey_minutes = round(duration, 2)
-    response.last_page_viewed = "survey_bp.thank_you"
-    db.session.commit()
+        response.last_page_viewed = "survey_bp.thank_you"
+        response.completed = True
+        db.session.commit()
+
+    # mturk_id = session.get("mturk_id", "")
+    completion_code = session.get("completion_code", "")
 
     return render_template(
         # "thank_you.html", mturk_id=mturk_id, completion_code=completion_code
