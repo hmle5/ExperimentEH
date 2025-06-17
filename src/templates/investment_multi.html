@@ -286,9 +286,14 @@
                         <span class="section-text">{{ startup.Assigned_Founder or "Unknown" }}{% if startup.Founder_age %}, age {{ startup.Founder_age or "Unknown" }}{% endif %}</span>
                     </div>
 
-                    <div>
+                    <!-- <div>
                         <span class="section-label">Valuation:</span>
                         <span class="section-text">{{ startup.Evaluation_sentence or "No evaluation available" }}</span>
+                    </div> -->
+
+                    <div>
+                        <span class="section-label">Validation:</span>
+                        <span class="section-text">{{ startup.Review_info or "No information available" }}</span>
                     </div> 
 
                     <div style="margin-bottom: 30px;"></div>

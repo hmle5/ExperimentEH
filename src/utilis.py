@@ -167,16 +167,23 @@ def load_excel_data(excel_path):
     sheets = pd.read_excel(excel_path, sheet_name=None)
     startup_df = sheets["startup"]
     founder_df = sheets["founder"]
-    value_df = sheets["value"]
+    #value_df = sheets["value"]
+    review_df = sheets["review"]
 
     # Normalize string fields in both DataFrames
-    for df in (startup_df, founder_df, value_df):
-    #for df in (startup_df, founder_df):
+    #for df in (startup_df, founder_df, value_df):
+    for df in (startup_df, founder_df):
         for col in df.select_dtypes(include="object").columns:
             df[col] = df[col].apply(normalize_text)
+    
+    prefix_map = dict(zip(founder_df["Founder_firstname_altered"], founder_df["Founder_prefix"]))
 
-    return startup_df, founder_df, value_df
+    review_sentences = review_df.iloc[:, 0].dropna().tolist()
+
+    #return startup_df, founder_df, value_df
     #return startup_df, founder_df
+
+    return startup_df, founder_df, review_sentences, prefix_map
 
 
 def generate_unique_code(existing_codes, length=8):
@@ -188,20 +195,34 @@ def generate_unique_code(existing_codes, length=8):
 
 
 def prepare_randomized_startup_set(
-    startup_df, founder_firstname, evaluation_sentences, set_size
+    #startup_df, founder_firstname, evaluation_sentences, set_size
     #startup_df, founder_firstname, set_size
+    startup_df, founder_firstname, review_sentences, prefix_map, set_size
 ):
     """Prepare one startup set with normalized data and substituted evaluation sentence."""
     selected_startups = startup_df.sample(n=set_size, replace=False).to_dict(
         orient="records"
     )
     assigned_founders = random.sample(founder_firstname, set_size)
-    assigned_sentences = random.sample(evaluation_sentences, set_size)
+    #assigned_sentences = random.sample(evaluation_sentences, set_size)
 
     combined = []
+
+    shuffled_reviews = random.sample(review_sentences, len(review_sentences))
+
     for i, startup in enumerate(selected_startups):
         founder_fullname = f"{assigned_founders[i]} {startup['Founder_lastname_altered']}"
-        sentence = f"{assigned_sentences[i]} {startup['Valuation_amount']}."
+        firstname = assigned_founders[i]
+        prefix = prefix_map[firstname]
+        lastname = startup["Founder_lastname_altered"]
+        #sentence = f"{assigned_sentences[i]} {startup['Valuation_amount']}."
+
+        review_raw = shuffled_reviews[i]
+        if "the founder" in review_raw:
+            review_sentence = review_raw.replace("the founder", f"{prefix} {lastname}")
+        else:
+            review_sentence = review_raw
+
 
         combined.append(
             {
@@ -220,7 +241,8 @@ def prepare_randomized_startup_set(
                 ),
                 #"Founder_Nstartups": startup["Founder_Nstartups"],
                 "Assigned_Founder": founder_fullname,
-                "Evaluation_sentence": sentence,
+                #"Evaluation_sentence": sentence,
+                "Review_info": review_sentence,
             }
         )
 
@@ -251,15 +273,16 @@ def generate_startup_sets(
     if os.path.exists(output_path):
         return False
 
-    startup_df, founder_df, value_df = load_excel_data(excel_path)
+    #startup_df, founder_df, value_df = load_excel_data(excel_path)
     #startup_df, founder_df = load_excel_data(excel_path)
+    startup_df, founder_df, review_sentences, prefix_map = load_excel_data(excel_path)
 
     # Ensure required fields are present
     startup_df = startup_df.dropna(
         subset=["Startup_name_altered", "Industry", "Product_info_altered"]
     )
     founder_firstname = founder_df["Founder_firstname_altered"].dropna().unique().tolist()
-    evaluation_sentences = value_df["Evaluation_sentence"].dropna().tolist()
+    #evaluation_sentences = value_df["Evaluation_sentence"].dropna().tolist()
 
     # Validation
     if len(founder_firstname) < set_size:
@@ -270,8 +293,9 @@ def generate_startup_sets(
 
     for _ in range(num_sets):
         startup_data = prepare_randomized_startup_set(
-            startup_df, founder_firstname, evaluation_sentences, set_size
+            #startup_df, founder_firstname, evaluation_sentences, set_size
             #startup_df, founder_firstname, set_size
+            startup_df, founder_firstname, review_sentences, prefix_map, set_size
         )
         code = generate_unique_code(used_codes, length=code_length)
         used_codes.add(code)
