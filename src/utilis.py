@@ -202,6 +202,10 @@ def prepare_randomized_startup_set(
     for i, startup in enumerate(selected_startups):
         founder_fullname = f"{assigned_founders[i]} {startup['Founder_lastname_altered']}"
         #sentence = f"{assigned_sentences[i]} {startup['Valuation_amount']}."
+        review_status = random.choice([
+            "Product due diligence completed and validated by third-party experts",
+            "Product due diligence not yet conducted"
+        ])
 
         combined.append(
             {
@@ -221,6 +225,7 @@ def prepare_randomized_startup_set(
                 #"Founder_Nstartups": startup["Founder_Nstartups"],
                 "Assigned_Founder": founder_fullname,
                 #"Evaluation_sentence": sentence,
+                "Review_status": review_status
             }
         )
 
