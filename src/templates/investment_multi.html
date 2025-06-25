@@ -169,6 +169,28 @@
             color: rgb(5, 40, 80); /* Darker blue when hovered */
             text-decoration: none; /* Add underline on hover */
         }
+
+        .founder-pitch {
+            background-color: #f8f8f8;
+            /*border-left: 4px solid #828282;*/
+            padding: 3px 3px;
+            font-style: italic;
+            color: #000000;
+            display: inline-block;
+            margin-top: 3px;
+            margin-left: -3px;
+            border-radius: 3px;
+            quotes: "“" "”";
+        }
+
+        .founder-pitch::before {
+            content: open-quote;
+        }
+
+        .founder-pitch::after {
+            content: close-quote;
+        }
+
     </style>
 
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -197,7 +219,7 @@
                             As an investor, your role includes screening start-up applications for investment. <strong>Your task now is to 
                             allocate a hypothetical budget of $300,000 across a portfolio of six early-stage start-ups. </strong>
                             These start-ups are based on real business cases which offer innovative solutions with success potential. 
-                            Each profile includes key information about the product, founder, and valuation. 
+                            Each profile includes key information about the product, founder, and the founder's pitch. 
                         </p>
                         <p>Please rely only on the information provided, as it reflects realistic investment scenarios and is 
                             sufficient for informed decisions. External sources (e.g., online search) should not be used.
@@ -268,10 +290,21 @@
                         <span class="section-text">{{ startup.Assigned_Founder or "Unknown" }}{% if startup.Founder_age %}, age {{ startup.Founder_age }}, {{ startup.Founder_Nstartups or "No information available" }}{% endif %}</span>
                     </div>
 
-                    <div>
+                    <!-- <div>
                         <span class="section-label">Valuation:</span>
                         <span class="section-text">{{ startup.Evaluation_sentence or "No evaluation available" }}</span>
-                    </div>
+                    </div> -->
+
+                    <div>
+                        <span class="section-label">Founder's pitch:</span>
+                        <span class="section-text founder-pitch">
+                            {% if startup.Founder_pitch %}
+                               <em>{{ startup.Founder_pitch }}</em>
+                            {% else %}
+                                No information available
+                            {% endif %}
+                        </span>
+                    </div> 
 
                     <div style="margin-bottom: 30px;"></div>
 
@@ -279,7 +312,7 @@
                         <div class="section-label" style="margin-top: 10px;">
                            <div style="font-weight: bold;">How much would you like to invest in this start-up?</div>
                         </div>
-                        <p class="text-muted fst-italic">(Please enter an amount between $0 and $300,000)</p>
+                        <p class="text-muted">(Please enter an amount between $0 and $300,000)</p>
                         <input type="number" name="investment_{{ startup.Startup_name }}" step="1" min="0" max="300000"
                         inputmode="numeric" pattern="\d*" onwheel="this.blur()"
                         onkeydown="return event.keyCode !== 38 && event.keyCode !== 40" class="investment-input"
