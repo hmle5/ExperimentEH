@@ -241,7 +241,8 @@
                         {% endwith %}
                     </div>
 
-                    <form method="POST" action="{{ url_for('survey_bp.investment') }}">
+                    <!-- <form method="POST" action="{{ url_for('survey_bp.investment') }}"> -->
+            <form method="POST" action="{{ url_for('survey_bp.investment', page=startup_page) }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     {% for startup in startups %}
@@ -287,11 +288,15 @@
                     </div>
                     </div>
                     {% endfor %}
-
+            
+            {% if page == 2 %}
             <div style="text-align: center; margin-top: 20px;">
                 <strong>Total investment so far: $<span id="totalDisplay">0</span></strong><br>
                 <small id="totalWarning" style="color: rgb(155, 3, 3); display: none;">Total must be exactly $300,000.</small>
             </div>
+            {% endif %}
+
+            <p class="text-center text-muted">Step {{ page + 1 }} of 3</p>
             
             <div class="submit-btn-container">
                 <button type="submit" class="btn custom-btn">
