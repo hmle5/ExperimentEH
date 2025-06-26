@@ -97,6 +97,7 @@ class Response(db.Model):
 
     # Survey feedback
     survey_feedback = db.Column(db.Text, nullable=True)
+    investment_page_times = db.Column(db.JSON, nullable=True)
 
 
 class StartupSetAssignment(db.Model):

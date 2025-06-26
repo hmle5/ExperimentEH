@@ -289,7 +289,9 @@ def news_info():
     # random.shuffle(shuffled_options)
 
     # Determine image filename
-    image_filename = "holmes.png" if story_entry["story"] == "holmes" else "control_fraud.png"
+    image_filename = (
+        "holmes.png" if story_entry["story"] == "holmes" else "control_fraud.png"
+    )
     # image_filename = (
     #     "holmes.png"
     #     if story_entry["story"] == "holmes"
@@ -316,21 +318,100 @@ def news_info():
 
 @survey_bp.route("/investment", methods=["GET", "POST"])
 def investment():
-    print("Debug: participant_id in session:", session.get("participant_id"))
-
     if "participant_id" not in session:
         return redirect(url_for("main.index"))
 
     participant_id = session["participant_id"]
     response = Response.query.filter_by(participant_id=participant_id).first()
-
     STARTUP_JSON_PATH = "startup_data.json"
 
-    # === POST: process investment inputs ===
-    if request.method == "POST":
+    # ========== GET ==========
+    if request.method == "GET":
+        # Setup session if first load
+        if "startups" not in session:
+            # Load available startups set
+            with open(STARTUP_JSON_PATH, "r") as file:
+                startup_data = json.load(file)
+            unused_sets = [item for item in startup_data if not item["used"]]
+            if not unused_sets:
+                flash("No unused startup sets available.", "error")
+                return redirect(url_for("main.index"))
+            selected_set = random.choice(unused_sets)
+            session["startups"] = selected_set["startups"]
+            session["startup_set_code"] = selected_set["code"]
+            session["startup_set_start_time"] = datetime.now(GERMAN_TZ).timestamp()
+            session["startup_page"] = 0
+            session["partial_investments"] = {}
+            session["investment_page_times"] = []
+            selected_set["used"] = True
+            with open(STARTUP_JSON_PATH, "w") as file:
+                json.dump(startup_data, file)
+            # Create/update assignment
+            assignment = StartupSetAssignment.query.filter_by(
+                participant_id=participant_id
+            ).first()
+            if not assignment:
+                assignment = StartupSetAssignment(
+                    participant_id=participant_id,
+                    startup_set_code=selected_set["code"],
+                    used=True,
+                    duration_seconds=None,
+                )
+                db.session.add(assignment)
+            else:
+                assignment.startup_set_code = selected_set["code"]
+                assignment.used = True
+                assignment.duration_seconds = None
+            db.session.commit()
+
+        # What page and which pair?
+        all_startups = session["startups"]
+        page = session.get("startup_page", 0)
+        page_startups = all_startups[page * 2 : page * 2 + 2]
+
+        partial_investments = session.get("partial_investments", {})
+
+        # Calculate invested_so_far based on previous pages
+        if page == 0:
+            invested_so_far = 0
+        elif page == 1:
+            invested_so_far = sum(
+                [
+                    v
+                    for k, v in partial_investments.items()
+                    if k in [s["Startup_name"] for s in all_startups[:2]]
+                ]
+            )
+        elif page == 2:
+            invested_so_far = sum(
+                [
+                    v
+                    for k, v in partial_investments.items()
+                    if k in [s["Startup_name"] for s in all_startups[:4]]
+                ]
+            )
+        else:
+            invested_so_far = sum(partial_investments.values())
+
+        left_to_allocate = 100000
+
+        # Start timing for this page
+        session["investment_page_start_time"] = datetime.now(GERMAN_TZ).timestamp()
+
+        return render_template(
+            "investment_multi.html",
+            startups=page_startups,
+            page=page,
+            invested_so_far=invested_so_far,
+            left_to_allocate=left_to_allocate,
+        )
+
+    # ========== POST ==========
+    elif request.method == "POST":
         current_page = session.get("startup_page", 0)
         all_startups = session.get("startups")
         partial_investments = session.get("partial_investments", {})
+        page_times = session.get("investment_page_times", [])
 
         if not all_startups or current_page is None:
             flash("Session expired. Please restart the task.", "error")
@@ -338,124 +419,212 @@ def investment():
 
         page_startups = all_startups[current_page * 2 : current_page * 2 + 2]
 
+        # Time spent on this page (append only once per POST)
+        now = datetime.now(GERMAN_TZ).timestamp()
+        duration = now - session.get("investment_page_start_time", now)
+        # Overwrite if the user resubmits the same page
+        if len(page_times) == current_page:
+            page_times.append(duration)
+        elif len(page_times) > current_page:
+            page_times[current_page] = duration
+        session["investment_page_times"] = page_times
+
+        # Gather and validate investments for this pair
+        pair_sum = 0
         for startup in page_startups:
             name = startup["Startup_name"]
             field_name = f"investment_{name}"
             amount_str = request.form.get(field_name)
-
             if amount_str is None:
                 flash("Missing investment amount.", "error")
-                return render_template("investment_multi.html", startups=page_startups, page=current_page)
-
+                # Calculate invested_so_far for current page
+                invested_so_far = 0
+                if current_page == 1:
+                    invested_so_far = sum(
+                        [
+                            v
+                            for k, v in partial_investments.items()
+                            if k in [s["Startup_name"] for s in all_startups[:2]]
+                        ]
+                    )
+                elif current_page == 2:
+                    invested_so_far = sum(
+                        [
+                            v
+                            for k, v in partial_investments.items()
+                            if k in [s["Startup_name"] for s in all_startups[:4]]
+                        ]
+                    )
+                left_to_allocate = 100000
+                return render_template(
+                    "investment_multi.html",
+                    startups=page_startups,
+                    page=current_page,
+                    invested_so_far=invested_so_far,
+                    left_to_allocate=left_to_allocate,
+                )
             try:
                 amount = int(round(float(amount_str)))
             except (ValueError, TypeError):
                 flash("Invalid amount.", "error")
-                return render_template("investment_multi.html", startups=page_startups, page=current_page)
-
+                invested_so_far = 0
+                if current_page == 1:
+                    invested_so_far = sum(
+                        [
+                            v
+                            for k, v in partial_investments.items()
+                            if k in [s["Startup_name"] for s in all_startups[:2]]
+                        ]
+                    )
+                elif current_page == 2:
+                    invested_so_far = sum(
+                        [
+                            v
+                            for k, v in partial_investments.items()
+                            if k in [s["Startup_name"] for s in all_startups[:4]]
+                        ]
+                    )
+                left_to_allocate = 100000
+                return render_template(
+                    "investment_multi.html",
+                    startups=page_startups,
+                    page=current_page,
+                    invested_so_far=invested_so_far,
+                    left_to_allocate=left_to_allocate,
+                )
             if not (0 <= amount <= 300000):
                 flash("Each amount must be between 0 and 300,000.", "error")
-                return render_template("investment_multi.html", startups=page_startups, page=current_page)
-
+                invested_so_far = 0
+                if current_page == 1:
+                    invested_so_far = sum(
+                        [
+                            v
+                            for k, v in partial_investments.items()
+                            if k in [s["Startup_name"] for s in all_startups[:2]]
+                        ]
+                    )
+                elif current_page == 2:
+                    invested_so_far = sum(
+                        [
+                            v
+                            for k, v in partial_investments.items()
+                            if k in [s["Startup_name"] for s in all_startups[:4]]
+                        ]
+                    )
+                left_to_allocate = 100000
+                return render_template(
+                    "investment_multi.html",
+                    startups=page_startups,
+                    page=current_page,
+                    invested_so_far=invested_so_far,
+                    left_to_allocate=left_to_allocate,
+                )
             partial_investments[name] = amount
+            pair_sum += amount
 
-        # Update session
+        # Validate $100,000 per pair
+        if pair_sum != 100000:
+            flash(
+                "You must allocate exactly $100,000 across these two start-ups.",
+                "error",
+            )
+            invested_so_far = 0
+            if current_page == 1:
+                invested_so_far = sum(
+                    [
+                        v
+                        for k, v in partial_investments.items()
+                        if k in [s["Startup_name"] for s in all_startups[:2]]
+                    ]
+                )
+            elif current_page == 2:
+                invested_so_far = sum(
+                    [
+                        v
+                        for k, v in partial_investments.items()
+                        if k in [s["Startup_name"] for s in all_startups[:4]]
+                    ]
+                )
+            left_to_allocate = 100000
+            # Remove these two from partial_investments so they are not counted as "done"
+            for s in page_startups:
+                partial_investments.pop(s["Startup_name"], None)
+            session["partial_investments"] = partial_investments
+            return render_template(
+                "investment_multi.html",
+                startups=page_startups,
+                page=current_page,
+                invested_so_far=invested_so_far,
+                left_to_allocate=left_to_allocate,
+            )
+
+        # Save back to session
         session["partial_investments"] = partial_investments
 
+        # Next page or finish
         if current_page < 2:
             session["startup_page"] = current_page + 1
-            return redirect(url_for("survey_bp.investment"))  # go to next page
+            return redirect(url_for("survey_bp.investment"))
         else:
-            # Final page: validate total and save to DB
             total = sum(partial_investments.values())
-            if total != 300000:
+            if len(partial_investments) != 6 or total != 300000:
                 flash(
-                    f"Total must be $300,000. You entered ${total:,}.",
-                    "error"
+                    "You must allocate exactly $100,000 per page and $300,000 total.",
+                    "error",
                 )
-                return render_template("investment_multi.html", startups=page_startups, page=current_page)
+                # Show last page again with values
+                invested_so_far = sum(
+                    [
+                        v
+                        for k, v in partial_investments.items()
+                        if k in [s["Startup_name"] for s in all_startups[:4]]
+                    ]
+                )
+                left_to_allocate = 100000
+                return render_template(
+                    "investment_multi.html",
+                    startups=page_startups,
+                    page=current_page,
+                    invested_so_far=invested_so_far,
+                    left_to_allocate=left_to_allocate,
+                )
 
             # Save response to DB
-            response = Response.query.filter_by(participant_id=participant_id).first()
             if response:
                 response.startup_code = session.get("startup_set_code")
                 response.startup_info = all_startups
                 response.startup_investments = partial_investments
                 response.startup_investment_duration = (
-                    datetime.now(GERMAN_TZ).timestamp() - session["startup_set_start_time"]
+                    datetime.now(GERMAN_TZ).timestamp()
+                    - session["startup_set_start_time"]
                 )
-                db.session.commit()
+                response.investment_page_times = session.get(
+                    "investment_page_times", []
+                )
+                response.last_page_viewed = "survey_bp.investment"
 
-            # Mark set as used, clean up
+                db.session.commit()
+            # Mark set as used in DB
             assignment = StartupSetAssignment.query.filter_by(
                 startup_set_code=session["startup_set_code"]
             ).first()
             if assignment:
                 assignment.used = True
                 db.session.commit()
-
             mark_startup_set_as_used(session["startup_set_code"])
 
-            for key in ["startups", "startup_page", "startup_set_code", "startup_set_start_time", "partial_investments"]:
+            # Clear session
+            for key in [
+                "startups",
+                "startup_page",
+                "startup_set_code",
+                "startup_set_start_time",
+                "partial_investments",
+                "investment_page_times",
+            ]:
                 session.pop(key, None)
 
             return redirect(url_for("survey_bp.investment_approach"))
-
-    # === GET: show form ===
-    if "startups" not in session:
-        # Load new startup set
-        with open(STARTUP_JSON_PATH, "r") as file:
-            startup_data = json.load(file)
-
-        unused_sets = [item for item in startup_data if not item["used"]]
-
-        if not unused_sets:
-            flash("No unused startup sets available.", "error")
-            return redirect(url_for("main.index"))
-
-        # selected_set = unused_sets[0]
-        selected_set = random.choice(unused_sets)
-        session["startups"] = selected_set["startups"]
-        session["startup_set_code"] = selected_set["code"]
-        session["startup_set_start_time"] = datetime.now(GERMAN_TZ).timestamp()
-        session["startup_page"] = 0
-        session["partial_investments"] = {}
-
-        selected_set["used"] = True  # temporary flag only
-        with open(STARTUP_JSON_PATH, "w") as file:
-            json.dump(startup_data, file)
-
-        # Create or update assignment
-        assignment = StartupSetAssignment.query.filter_by(
-            participant_id=participant_id
-        ).first()
-        if not assignment:
-            assignment = StartupSetAssignment(
-                participant_id=participant_id,
-                startup_set_code=selected_set["code"],
-                used=True,
-                duration_seconds=None,
-            )
-            db.session.add(assignment)
-        else:
-            assignment.startup_set_code = selected_set["code"]
-            assignment.used = True
-            assignment.duration_seconds = None
-        db.session.commit()
-
-    # else: session already has the set (retry after failed POST)
-    all_startups = session["startups"]
-    page = session.get("startup_page", 0)
-    page_startups = all_startups[page * 2 : page * 2 + 2]
-
-    print("Debug: session['startup_set_code']:", session.get("startup_set_code"))
-    print("Debug: session['startups']:", all_startups)
-    print(
-        "Debug: session['startup_set_start_time']:",
-        session.get("startup_set_start_time"),
-    )
-
-    return render_template("investment_multi.html", startups=page_startups, page=page)
 
 
 ENGLISH_WORDS = set(nltk_words.words())
