@@ -85,8 +85,9 @@ def generate_news_story_file():
     # Generate 500 unique entries for each story type
     # Pilot 1: 90 unique entries for each story type
     # Pilot 1 repli: 60 unique entries for each story type two stories
+    # Pilot 1 pitch: increases 50 more places so now added a new story json with 35 codes each type
     stories = []
-    for _ in range(60):
+    for _ in range(35):
         stories.append({"code": generate_code(), "used": False, "story": "holmes"})
         #stories.append({"code": generate_code(), "used": False, "story": "control_news"})
         stories.append({"code": generate_code(), "used": False, "story": "control_fraud_news"})
