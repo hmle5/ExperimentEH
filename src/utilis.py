@@ -187,26 +187,28 @@ def prepare_randomized_startup_set(
         orient="records"
     )
 
-    # Sample 3 male and 3 female first names
-    male_names = random.sample(founder_firstname_male, 3)
-    female_names = random.sample(founder_firstname_female, 3)
+    # Step 1: Sample 4 male and 2 female first names
+    male_names = random.sample(founder_firstname_male, 4)
+    female_names = random.sample(founder_firstname_female, 2)
 
-    # Step 2: Shuffle and pair them
-    random.shuffle(male_names)
-    random.shuffle(female_names)
-    paired = list(zip(male_names, female_names))
+    # Step 2: Create one male-male pair
+    male_pair = [(male_names[0], "male"), (male_names[1], "male")]
 
-    # Step 3: Randomize within-pair order (male-female or female-male)
+    # Step 3: Create two mixed-gender pairs
     mixed_pairs = []
-    for m, f in paired:
+    for m, f in zip(male_names[2:], female_names):
         if random.choice([True, False]):
             mixed_pairs.append([(m, "male"), (f, "female")])
         else:
             mixed_pairs.append([(f, "female"), (m, "male")])
 
-    # Step 4: Shuffle pair order and flatten into final sequence
-    random.shuffle(mixed_pairs)
-    assigned_founders = [person for pair in mixed_pairs for person in pair]
+    # Step 4: Insert the male-male pair at position 0 or 1
+    pair_order = mixed_pairs.copy()
+    insert_position = random.choice([0, 1])
+    pair_order.insert(insert_position, male_pair)
+
+    # Step 5: Flatten to assigned founder list
+    assigned_founders = [person for pair in pair_order for person in pair]
 
     assigned_sentences = random.sample(evaluation_sentences, set_size)
 
