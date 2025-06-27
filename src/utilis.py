@@ -180,18 +180,41 @@ def generate_unique_code(existing_codes, length=8):
 
 
 def prepare_randomized_startup_set(
-    startup_df, founder_firstname, evaluation_sentences, set_size
+    startup_df, founder_firstname_male, founder_firstname_female, evaluation_sentences, set_size
 ):
     """Prepare one startup set with normalized data and substituted evaluation sentence."""
     selected_startups = startup_df.sample(n=set_size, replace=False).to_dict(
         orient="records"
     )
-    assigned_founders = random.sample(founder_firstname, set_size)
+
+    # Sample 3 male and 3 female first names
+    male_names = random.sample(founder_firstname_male, 3)
+    female_names = random.sample(founder_firstname_female, 3)
+
+    # Step 2: Shuffle and pair them
+    random.shuffle(male_names)
+    random.shuffle(female_names)
+    paired = list(zip(male_names, female_names))
+
+    # Step 3: Randomize within-pair order (male-female or female-male)
+    mixed_pairs = []
+    for m, f in paired:
+        if random.choice([True, False]):
+            mixed_pairs.append([(m, "male"), (f, "female")])
+        else:
+            mixed_pairs.append([(f, "female"), (m, "male")])
+
+    # Step 4: Shuffle pair order and flatten into final sequence
+    random.shuffle(mixed_pairs)
+    assigned_founders = [person for pair in mixed_pairs for person in pair]
+
     assigned_sentences = random.sample(evaluation_sentences, set_size)
+
 
     combined = []
     for i, startup in enumerate(selected_startups):
-        founder_fullname = f"{assigned_founders[i]} {startup['Founder_lastname_altered']}"
+        first_name, gender = assigned_founders[i]
+        founder_fullname = f"{first_name} {startup['Founder_lastname_altered']}"
         sentence = f"{assigned_sentences[i]} {startup['Valuation_amount']}."
 
         combined.append(
@@ -211,11 +234,12 @@ def prepare_randomized_startup_set(
                 ),
                 "Founder_Nstartups": startup["Founder_Nstartups"],
                 "Assigned_Founder": founder_fullname,
+                "Founder_gender": gender,
                 "Evaluation_sentence": sentence,
             }
         )
 
-    random.shuffle(combined)
+    #random.shuffle(combined)
 
     # Add order variable: "Startup A", "Startup B", ...
     order_labels = [f"Start-up {chr(65 + i)}" for i in range(set_size)]
@@ -248,19 +272,20 @@ def generate_startup_sets(
     startup_df = startup_df.dropna(
         subset=["Startup_name_altered", "Industry", "Product_info_altered"]
     )
-    founder_firstname = founder_df["Founder_firstname_altered"].dropna().unique().tolist()
+    founder_firstname_male = founder_df[founder_df["gender"] == "male"]["Founder_firstname_altered"].dropna().unique().tolist()
+    founder_firstname_female = founder_df[founder_df["gender"] == "female"]["Founder_firstname_altered"].dropna().unique().tolist()
     evaluation_sentences = value_df["Evaluation_sentence"].dropna().tolist()
 
     # Validation
-    if len(founder_firstname) < set_size:
-        raise ValueError("Not enough founder names in Excel to build a full set.")
+    if len(founder_firstname_male) < 3 or len(founder_firstname_female) < 3:
+         raise ValueError("Not enough male or female founder names to build each set.")
 
     startup_sets = []
     used_codes = set()
 
     for _ in range(num_sets):
         startup_data = prepare_randomized_startup_set(
-            startup_df, founder_firstname, evaluation_sentences, set_size
+            startup_df, founder_firstname_male, founder_firstname_female, evaluation_sentences, set_size
         )
         code = generate_unique_code(used_codes, length=code_length)
         used_codes.add(code)
