@@ -225,7 +225,7 @@ def index():
         SURVEY_FLOW = [
             "main.index",
             "survey_bp.instructions",
-            "survey_bp.educating",
+            "survey_bp.information",
             "survey_bp.phase_control",
             "survey_bp.news_info",
             "survey_bp.investment",

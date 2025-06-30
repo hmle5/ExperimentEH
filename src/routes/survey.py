@@ -110,7 +110,7 @@ def instructions():
             db.session.commit()
             db.session.refresh(response)  # ✅ Ensure the session reflects the DB write
 
-            return redirect(url_for("survey_bp.educating"))
+            return redirect(url_for("survey_bp.information"))
         else:
             flash("Incorrect answer. Please read the question again.", "error")
             return redirect(url_for("survey_bp.instructions"))
@@ -134,8 +134,8 @@ def instructions():
 #     return render_template("educating.html")
 
 
-@survey_bp.route("/educating", methods=["GET", "POST"])
-def educating():
+@survey_bp.route("/information", methods=["GET", "POST"])
+def information():
     if "participant_id" not in session:
         return redirect(url_for("main.index"))
 
@@ -147,16 +147,16 @@ def educating():
         investor_answer = request.form.get("investors")
 
         if prospect_answer == "out_of_business" and investor_answer == "both":
-            response.last_page_viewed = "survey_bp.educating"
+            response.last_page_viewed = "survey_bp.information"
             db.session.commit()
             db.session.refresh(response)  # ✅ Ensure the session reflects the DB write
 
             return redirect(url_for("survey_bp.phase_control"))
         else:
             flash("Incorrect answer. Please read the content and try again.", "error")
-            return redirect(url_for("survey_bp.educating"))
+            return redirect(url_for("survey_bp.information"))
 
-    return render_template("educating.html")
+    return render_template("information.html")
 
 
 # @survey_bp.route("/phase_control", methods=["GET", "POST"])
@@ -492,8 +492,8 @@ def investment():
                     invested_so_far=invested_so_far,
                     left_to_allocate=left_to_allocate,
                 )
-            if not (0 <= amount <= 300000):
-                flash("Each amount must be between 0 and 300,000.", "error")
+            if not (0 <= amount <= 100000):
+                flash("Each amount must be between 0 and 100,000.", "error")
                 invested_so_far = 0
                 if current_page == 1:
                     invested_so_far = sum(
@@ -525,7 +525,7 @@ def investment():
         # Validate $100,000 per pair
         if pair_sum != 100000:
             flash(
-                "You must allocate exactly $100,000 across these two start-ups.",
+                "Please allocate exactly $100,000 across these two start-ups.",
                 "error",
             )
             invested_so_far = 0
@@ -569,7 +569,7 @@ def investment():
             total = sum(partial_investments.values())
             if len(partial_investments) != 6 or total != 300000:
                 flash(
-                    "You must allocate exactly $100,000 per page and $300,000 total.",
+                    "Please allocate exactly $100,000 per page and $300,000 total.",
                     "error",
                 )
                 # Show last page again with values

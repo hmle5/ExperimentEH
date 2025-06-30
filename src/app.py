@@ -34,7 +34,7 @@ def create_app():
     # # Define the allowed survey navigation flow
     # SURVEY_FLOW = [
     #     "survey_bp.instructions",
-    #     "survey_bp.educating",
+    #     "survey_bp.information",
     #     "survey_bp.phase_control",
     #     "survey_bp.news_info",
     #     "survey_bp.investment",
@@ -47,7 +47,7 @@ def create_app():
 
     SURVEY_FLOW = [
         "survey_bp.instructions",
-        "survey_bp.educating",
+        "survey_bp.information",
         "survey_bp.phase_control",
         "survey_bp.news_info",
         "survey_bp.investment",
@@ -98,9 +98,9 @@ def create_app():
         except ValueError:
             return  # invalid route or last_page
 
-        if current_endpoint != allowed_next:
-            flash("Please finish your answers.", "error")
-            return redirect(url_for(allowed_next))
+        # if current_endpoint != allowed_next:
+        #     flash("Please finish your answers.", "error")
+        #     return redirect(url_for(allowed_next))
 
     # @app.before_request
     # def enforce_survey_flow():
